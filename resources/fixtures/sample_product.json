@@ -1,0 +1,94 @@
+[
+  {
+    "model": "resources.brand",
+    "pk": 1,
+    "fields": {
+      "code": "ACM",
+      "name": "ACME",
+      "description": "Marca de ejemplo",
+      "is_active": true,
+      "created_at": "2026-02-18T00:00:00Z",
+      "updated_at": "2026-02-18T00:00:00Z"
+    }
+  },
+  {
+    "model": "resources.type",
+    "pk": 1,
+    "fields": {
+      "code": "FISI",
+      "name": "Producto Físico",
+      "description": "Producto tangible",
+      "is_active": true,
+      "created_at": "2026-02-18T00:00:00Z",
+      "updated_at": "2026-02-18T00:00:00Z"
+    }
+  },
+  {
+    "model": "resources.category",
+    "pk": 1,
+    "fields": {
+      "code": "LIMP",
+      "name": "Limpieza",
+      "description": "Productos de limpieza",
+      "is_active": true,
+      "created_at": "2026-02-18T00:00:00Z",
+      "updated_at": "2026-02-18T00:00:00Z"
+    }
+  },
+  {
+    "model": "resources.unitofmeasure",
+    "pk": 100,
+    "fields": {
+      "name": "Litro (ejemplo)",
+      "abbreviation": "Lt",
+      "is_active": true,
+      "created_at": "2026-02-18T00:00:00Z",
+      "updated_at": "2026-02-18T00:00:00Z"
+    }
+  },
+  {
+    "model": "resources.product",
+    "pk": 1,
+    "fields": {
+      "short_name": "Cloro ACME",
+      "long_name": "Cloro Multiusos ACME para Limpieza del Hogar",
+      "short_description": "Cloro multiusos para limpieza",
+      "long_description": "Cloro multiusos para limpieza del hogar, ideal para desinfectar superficies y blanquear ropa.",
+      "sku": "ACM-CLR-001",
+      "brand": 1,
+      "is_active": true,
+      "created_at": "2026-02-18T00:00:00Z",
+      "updated_at": "2026-02-18T00:00:00Z"
+    }
+  },
+  {
+    "model": "resources.productvariation",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "unit_of_measure": 100,
+      "quantity": "1.0000",
+      "barcode": "7501000100011",
+      "price": "25.50",
+      "image": null,
+      "is_active": true,
+      "created_at": "2026-02-18T00:00:00Z",
+      "updated_at": "2026-02-18T00:00:00Z"
+    }
+  },
+  {
+    "model": "resources.productvariation",
+    "pk": 2,
+    "fields": {
+      "product": 1,
+      "unit_of_measure": 100,
+      "quantity": "5.0000",
+      "barcode": "7501000100028",
+      "price": "99.00",
+      "image": null,
+      "is_active": true,
+      "created_at": "2026-02-18T00:00:00Z",
+      "updated_at": "2026-02-18T00:00:00Z"
+    }
+  }
+]
