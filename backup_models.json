@@ -1,0 +1,12 @@
+[
+  "entities.PersonTitle",
+  "entities.CompanySector",
+  "entities.Country",
+  "entities.JobPosition",
+  "entities.Bank",
+  "invoicing.SatCatalog",
+  "resources.Brand",
+  "resources.Type",
+  "resources.Category",
+  "resources.UnitOfMeasure"
+]

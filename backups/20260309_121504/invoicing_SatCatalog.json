@@ -1,0 +1,292 @@
+[
+{
+  "model": "invoicing.satcatalog",
+  "pk": "03",
+  "fields": {
+    "catalog": "DIOT_TipoOperacion",
+    "description": "Prestación de Servicios Profesionales",
+    "valid_from": "2025-08-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "04",
+  "fields": {
+    "catalog": "DIOT_TipoTercero",
+    "description": "Proveedor Nacional",
+    "valid_from": "2025-08-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "05",
+  "fields": {
+    "catalog": "DIOT_TipoTercero",
+    "description": "Proveedor Extranjero",
+    "valid_from": "2025-08-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "06",
+  "fields": {
+    "catalog": "DIOT_TipoOperacion",
+    "description": "Arrendamiento de Inmuebles",
+    "valid_from": "2025-08-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "15",
+  "fields": {
+    "catalog": "DIOT_TipoTercero",
+    "description": "Proveedor Global",
+    "valid_from": "2025-08-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "601",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "General de Ley Personas Morales",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "603",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Personas Morales con Fines no Lucrativos",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "605",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Sueldos y Salarios e Ingresos Asimilados a Salarios",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "606",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Arrendamiento",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "607",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Régimen de Enajenación o Adquisición de Bienes",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "608",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Demás ingresos",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "610",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Residentes en el Extranjero sin Establecimiento Permanente en México",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "611",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Ingresos por Dividendos (socios y accionistas)",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "612",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Personas Físicas con Actividades Empresariales y Profesionales",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "614",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Ingresos por intereses",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "615",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Régimen de los ingresos por obtención de premios",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "616",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Sin obligaciones fiscales",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "620",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Sociedades Cooperativas de Producción que optan por diferir sus ingresos",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "621",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Incorporación Fiscal",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "622",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Actividades Agrícolas, Ganaderas, Silvícolas y Pesqueras",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "623",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Opcional para Grupos de Sociedades",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "624",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Coordinados",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "625",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Régimen de las Actividades Empresariales con ingresos a través de Plataformas Tecnológicas",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "626",
+  "fields": {
+    "catalog": "c_RegimenFiscal",
+    "description": "Régimen Simplificado de Confianza",
+    "valid_from": "2022-01-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "85",
+  "fields": {
+    "catalog": "DIOT_TipoOperacion",
+    "description": "Otros",
+    "valid_from": "2025-08-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "CAD",
+  "fields": {
+    "catalog": "c_Moneda",
+    "description": "Dólar Canadiense",
+    "valid_from": "2022-08-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "EUR",
+  "fields": {
+    "catalog": "c_Moneda",
+    "description": "Euro",
+    "valid_from": "2022-08-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "MXN",
+  "fields": {
+    "catalog": "c_Moneda",
+    "description": "Peso Mexicano",
+    "valid_from": "2022-08-01",
+    "valid_to": null
+  }
+},
+{
+  "model": "invoicing.satcatalog",
+  "pk": "USD",
+  "fields": {
+    "catalog": "c_Moneda",
+    "description": "Dólar americano",
+    "valid_from": "2022-08-01",
+    "valid_to": null
+  }
+}
+]

@@ -1,0 +1,74 @@
+[
+{
+  "model": "entities.persontitle",
+  "pk": 1,
+  "fields": {
+    "code": "SR",
+    "name": "Señor",
+    "abbreviation": "Sr.",
+    "is_active": true,
+    "created_at": "2026-03-04T00:00:00Z",
+    "updated_at": "2026-03-04T00:00:00Z"
+  }
+},
+{
+  "model": "entities.persontitle",
+  "pk": 2,
+  "fields": {
+    "code": "SRA",
+    "name": "Señora",
+    "abbreviation": "Sra.",
+    "is_active": true,
+    "created_at": "2026-03-04T00:00:00Z",
+    "updated_at": "2026-03-04T00:00:00Z"
+  }
+},
+{
+  "model": "entities.persontitle",
+  "pk": 3,
+  "fields": {
+    "code": "ING",
+    "name": "Ingeniero",
+    "abbreviation": "Ing.",
+    "is_active": true,
+    "created_at": "2026-03-04T00:00:00Z",
+    "updated_at": "2026-03-04T00:00:00Z"
+  }
+},
+{
+  "model": "entities.persontitle",
+  "pk": 4,
+  "fields": {
+    "code": "LIC",
+    "name": "Licenciado",
+    "abbreviation": "Lic.",
+    "is_active": true,
+    "created_at": "2026-03-04T00:00:00Z",
+    "updated_at": "2026-03-04T00:00:00Z"
+  }
+},
+{
+  "model": "entities.persontitle",
+  "pk": 5,
+  "fields": {
+    "code": "MTRA",
+    "name": "Maestra",
+    "abbreviation": "Mtra.",
+    "is_active": true,
+    "created_at": "2026-03-04T00:00:00Z",
+    "updated_at": "2026-03-04T00:00:00Z"
+  }
+},
+{
+  "model": "entities.persontitle",
+  "pk": 6,
+  "fields": {
+    "code": "DR",
+    "name": "Doctor",
+    "abbreviation": "Dr.",
+    "is_active": true,
+    "created_at": "2026-03-04T00:00:00Z",
+    "updated_at": "2026-03-04T00:00:00Z"
+  }
+}
+]

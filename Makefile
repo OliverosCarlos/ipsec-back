@@ -13,7 +13,7 @@ RUN = docker run --rm \
 	--network $(NETWORK) \
 	$(IMAGE_NAME)
 
-.PHONY: migrate makemigrations createsuperuser shell dbshell showmigrations collectstatic loaddata
+.PHONY: migrate makemigrations createsuperuser shell dbshell showmigrations collectstatic loaddata restoredata backupdata
 
 ## Run pending migrations
 migrate:
@@ -55,6 +55,24 @@ dbshell:
 ## Load fixture data (usage: make loaddata FIXTURE=countries)
 loaddata:
 	$(RUN) python manage.py loaddata $(FIXTURE)
+
+## Restore a backup interactively (usage: make restoredata)
+restoredata:
+	docker run --rm -it \
+		--env-file .env \
+		--network $(NETWORK) \
+		-v $$(pwd)/backups:/app/backups \
+		-v $$(pwd)/restore.py:/app/restore.py:ro \
+		$(IMAGE_NAME) python restore.py
+
+## Backup database tables to JSON (usage: make backupdata)
+backupdata:
+	docker run --rm \
+		--env-file .env \
+		--network $(NETWORK) \
+		-v $$(pwd)/backups:/app/backups \
+		-v $$(pwd)/backup_models.json:/app/backup_models.json:ro \
+		$(IMAGE_NAME) python manage.py backupdata
 
 ## Run an arbitrary manage.py command (usage: make manage CMD="check --deploy")
 manage:
