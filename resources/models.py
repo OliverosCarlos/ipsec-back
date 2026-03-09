@@ -93,8 +93,8 @@ class Product(models.Model):
         null=True,
         blank=True,
     )
-    suppliers = models.ManyToManyField(
-        'entities.Supplier',
+    partners = models.ManyToManyField(
+        'entities.Partner',
         related_name='products',
         blank=True,
     )

@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from resources.serializers import ProductVariationSerializer
 
-from .models import PriceList, PriceListItem
+from .models import PriceList, PriceListItem, SatCatalog
 
 
 class PriceListSerializer(serializers.ModelSerializer):
@@ -39,3 +39,19 @@ class PriceListItemSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class SatCatalogSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = SatCatalog
+        fields = [
+            'code',
+            'catalog',
+            'description',
+            'valid_from',
+            'valid_to',
+        ]
+
+
+class SatCatalogBulkCreateSerializer(serializers.ListSerializer):
+    child = SatCatalogSerializer()

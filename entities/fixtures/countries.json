@@ -1,0 +1,23 @@
+[
+  {
+    "model": "entities.country",
+    "pk": "MEX",
+    "fields": {
+      "name": "México"
+    }
+  },
+  {
+    "model": "entities.country",
+    "pk": "CAN",
+    "fields": {
+      "name": "Canadá"
+    }
+  },
+  {
+    "model": "entities.country",
+    "pk": "USA",
+    "fields": {
+      "name": "Estados Unidos"
+    }
+  }
+]

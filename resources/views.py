@@ -1,4 +1,5 @@
 from rest_framework import generics
+from .filters import BrandFilter
 
 from .models import (
     Brand,
@@ -23,6 +24,7 @@ from .serializers import (
 class BrandListCreateView(generics.ListCreateAPIView):
     queryset = Brand.objects.all()
     serializer_class = BrandSerializer
+    filterset_class = BrandFilter
     search_fields = ['name']
 
 

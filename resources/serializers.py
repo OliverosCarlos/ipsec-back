@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from accounting.serializers import AccountSerializer
-from entities.serializers import SupplierSerializer
+from entities.serializers import PartnerSerializer
 
 from .models import (
     Brand,
@@ -95,7 +95,7 @@ class ProductSerializer(serializers.ModelSerializer):
     brand_detail = BrandSerializer(source='brand', read_only=True)
     category_detail = CategorySerializer(source='category', read_only=True)
     product_type_detail = TypeSerializer(source='product_type', read_only=True)
-    suppliers_detail = SupplierSerializer(source='suppliers', many=True, read_only=True)
+    partners_detail = PartnerSerializer(source='partners', many=True, read_only=True)
     inventory_account_detail = AccountSerializer(source='inventory_account', read_only=True)
     variations = ProductVariationWriteSerializer(many=True, required=False)
     variations_detail = ProductVariationSerializer(source='variations', many=True, read_only=True)
@@ -115,8 +115,8 @@ class ProductSerializer(serializers.ModelSerializer):
             'category_detail',
             'product_type',
             'product_type_detail',
-            'suppliers',
-            'suppliers_detail',
+            'partners',
+            'partners_detail',
             'inventory_account',
             'inventory_account_detail',
             'is_active',
@@ -129,10 +129,10 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         variations_data = validated_data.pop('variations', [])
-        suppliers_data = validated_data.pop('suppliers', [])
+        partners_data = validated_data.pop('partners', [])
         product = Product.objects.create(**validated_data)
-        if suppliers_data:
-            product.suppliers.set(suppliers_data)
+        if partners_data:
+            product.partners.set(partners_data)
         for variation_data in variations_data:
             variation_data.pop('id', None)
             ProductVariation.objects.create(product=product, **variation_data)
@@ -140,14 +140,14 @@ class ProductSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         variations_data = validated_data.pop('variations', None)
-        suppliers_data = validated_data.pop('suppliers', None)
+        partners_data = validated_data.pop('partners', None)
 
         for attr, value in validated_data.items():
             setattr(instance, attr, value)
         instance.save()
 
-        if suppliers_data is not None:
-            instance.suppliers.set(suppliers_data)
+        if partners_data is not None:
+            instance.partners.set(partners_data)
 
         if variations_data is not None:
             existing_ids = set(instance.variations.values_list('id', flat=True))
