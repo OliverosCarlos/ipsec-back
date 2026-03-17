@@ -5,6 +5,8 @@ from .models import (
     Brand,
     Product,
     Category,
+    PriceList,
+    PriceListItem,
     ProductVariation,
     Type,
     UnitOfMeasure,
@@ -12,6 +14,8 @@ from .models import (
 from .serializers import (
     BrandSerializer,
     CategorySerializer,
+    PriceListSerializer,
+    PriceListItemSerializer,
     ProductVariationSerializer,
     ProductSerializer,
     TypeSerializer,
@@ -81,11 +85,11 @@ class ProductListCreateView(generics.ListCreateAPIView):
         'product_type',
         'inventory_account',
     ).prefetch_related(
-        'suppliers',
+        'partners',
         'variations__unit_of_measure',
     )
     serializer_class = ProductSerializer
-    search_fields = ['short_name', 'long_name', 'sku']
+    search_fields = ['name', 'variations__sku']
     filterset_fields = ['brand', 'category', 'product_type', 'is_active']
 
 
@@ -96,7 +100,7 @@ class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         'product_type',
         'inventory_account',
     ).prefetch_related(
-        'suppliers',
+        'partners',
         'variations__unit_of_measure',
     )
     serializer_class = ProductSerializer
@@ -109,7 +113,7 @@ class ProductVariationListCreateView(generics.ListCreateAPIView):
         'product', 'unit_of_measure',
     )
     serializer_class = ProductVariationSerializer
-    search_fields = ['barcode']
+    search_fields = ['sku', 'barcode', 'override_name']
     filterset_fields = ['product', 'unit_of_measure', 'is_active']
 
 
@@ -118,3 +122,30 @@ class ProductVariationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAP
         'product', 'unit_of_measure',
     )
     serializer_class = ProductVariationSerializer
+
+
+# ── PriceList ───────────────────────────────────────────────────────────────────────────
+
+class PriceListListCreateView(generics.ListCreateAPIView):
+    queryset = PriceList.objects.prefetch_related('items__variant')
+    serializer_class = PriceListSerializer
+    search_fields = ['name']
+    filterset_fields = ['currency', 'is_active']
+
+
+class PriceListRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PriceList.objects.prefetch_related('items__variant')
+    serializer_class = PriceListSerializer
+
+
+# ── PriceListItem ───────────────────────────────────────────────────────────────────────
+
+class PriceListItemListCreateView(generics.ListCreateAPIView):
+    queryset = PriceListItem.objects.select_related('price_list', 'variant')
+    serializer_class = PriceListItemSerializer
+    filterset_fields = ['price_list', 'variant', 'is_active']
+
+
+class PriceListItemRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = PriceListItem.objects.select_related('price_list', 'variant')
+    serializer_class = PriceListItemSerializer

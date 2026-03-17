@@ -24,14 +24,14 @@ class ProductVariationInline(admin.TabularInline):
 
 @admin.register(Product)
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ['short_name', 'sku', 'brand', 'is_active', 'created_at']
-    search_fields = ['short_name', 'long_name', 'sku']
+    list_display = ['name', 'brand', 'is_active', 'created_at']
+    search_fields = ['name']
     list_filter = ['brand', 'is_active']
     inlines = [ProductVariationInline]
 
 
 @admin.register(ProductVariation)
 class ProductVariationAdmin(admin.ModelAdmin):
-    list_display = ['product', 'quantity', 'unit_of_measure', 'price', 'is_active']
-    search_fields = ['product__short_name', 'barcode']
+    list_display = ['product', 'quantity', 'unit_of_measure', 'is_active']
+    search_fields = ['product__name', 'barcode']
     list_filter = ['is_active', 'unit_of_measure']

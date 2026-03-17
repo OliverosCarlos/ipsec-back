@@ -57,11 +57,13 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     # Third party
     'corsheaders',
     'rest_framework',
     'django_filters',
     # Local apps
+    'core',
     'entities',
     'inventory',
     'invoicing',

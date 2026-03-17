@@ -99,12 +99,15 @@ class PartnerContactFullReadOnlySerializer(serializers.ModelSerializer):
 
 
 class PartnerRoleSerializer(serializers.ModelSerializer):
+    role_display = serializers.CharField(source='get_role_display', read_only=True)
+
     class Meta:
         model = PartnerRole
         fields = [
             'id',
             'partner',
             'role',
+            'role_display',
             'diot_third_type',
             'diot_operation_type',
             'default_currency',

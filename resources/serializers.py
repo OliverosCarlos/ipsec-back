@@ -7,6 +7,8 @@ from .models import (
     Brand,
     Product,
     Category,
+    PriceList,
+    PriceListItem,
     ProductVariation,
     Type,
     UnitOfMeasure,
@@ -52,38 +54,59 @@ class UnitOfMeasureSerializer(serializers.ModelSerializer):
 # ── Product Variation ─────────────────────────────────────────────────────────
 
 class ProductVariationSerializer(serializers.ModelSerializer):
-    unit_of_measure_detail = UnitOfMeasureSerializer(source='unit_of_measure', read_only=True)
+    unit_of_measure_detail = serializers.SerializerMethodField()
+    display_name = serializers.CharField(read_only=True)
+
+    display_short_description = serializers.CharField(read_only=True)
+    display_long_description = serializers.CharField(read_only=True)
 
     class Meta:
         model = ProductVariation
         fields = [
             'id',
             'product',
+            'sku',
+            'barcode',
+            'attributes',
+            'override_name',
+            'override_short_description',
             'unit_of_measure',
             'unit_of_measure_detail',
             'quantity',
-            'barcode',
-            'price',
+            'base_price',
+            'standard_cost',
             'image',
+            'display_name',
+            'display_short_description',
+            'display_long_description',
             'is_active',
             'created_at',
             'updated_at',
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
 
+    def get_unit_of_measure_detail(self, obj):
+        from invoicing.serializers import ClaveUnidadSerializer
+        return ClaveUnidadSerializer(obj.unit_of_measure).data if obj.unit_of_measure else None
+    
 
 class ProductVariationWriteSerializer(serializers.ModelSerializer):
     """Serializer for nested variation creation/update inside ProductSerializer."""
-    id = serializers.IntegerField(required=False)
+    id = serializers.UUIDField(required=False)
 
     class Meta:
         model = ProductVariation
         fields = [
             'id',
+            'sku',
+            'barcode',
+            'attributes',
+            'override_name',
+            'override_short_description',
             'unit_of_measure',
             'quantity',
-            'barcode',
-            'price',
+            'base_price',
+            'standard_cost',
             'image',
             'is_active',
         ]
@@ -104,11 +127,11 @@ class ProductSerializer(serializers.ModelSerializer):
         model = Product
         fields = [
             'id',
-            'short_name',
-            'long_name',
+            'name',
             'short_description',
             'long_description',
-            'sku',
+            'sat_product_key',
+            'tax_object',
             'brand',
             'brand_detail',
             'category',
@@ -173,3 +196,21 @@ class ProductSerializer(serializers.ModelSerializer):
                 instance.variations.filter(id__in=to_delete).delete()
 
         return instance
+
+
+# ── PriceList ──────────────────────────────────────────────────────────────────
+
+class PriceListItemSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PriceListItem
+        fields = ['id', 'price_list', 'variant', 'override_price', 'is_active', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class PriceListSerializer(serializers.ModelSerializer):
+    items = PriceListItemSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = PriceList
+        fields = ['id', 'name', 'currency', 'start_date', 'end_date', 'items', 'is_active', 'created_at', 'updated_at']
+        read_only_fields = ['id', 'created_at', 'updated_at']

@@ -1,6 +1,6 @@
 import django_filters
 
-from .models import SatCatalog
+from .models import ClaveProdServ, ClaveUnidad, SatCatalog
 
 
 class SatCatalogFilter(django_filters.FilterSet):
@@ -13,3 +13,22 @@ class SatCatalogFilter(django_filters.FilterSet):
     class Meta:
         model = SatCatalog
         fields = ['code', 'catalog', 'description', 'valid_from', 'valid_to']
+
+
+class ClaveProdServFilter(django_filters.FilterSet):
+    clave = django_filters.CharFilter(lookup_expr='istartswith')
+    descripcion = django_filters.CharFilter(lookup_expr='icontains')
+    palabras_similares = django_filters.CharFilter(lookup_expr='icontains')
+
+    class Meta:
+        model = ClaveProdServ
+        fields = ['clave', 'descripcion', 'palabras_similares']
+
+
+class ClaveUnidadFilter(django_filters.FilterSet):
+    clave = django_filters.CharFilter(lookup_expr='istartswith')
+    name = django_filters.CharFilter(lookup_expr='icontains')
+
+    class Meta:
+        model = ClaveUnidad
+        fields = ['clave', 'name']

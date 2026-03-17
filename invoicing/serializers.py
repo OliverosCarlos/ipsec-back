@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 from resources.serializers import ProductVariationSerializer
 
-from .models import PriceList, PriceListItem, SatCatalog
+from .models import ClaveProdServ, ClaveUnidad, PriceList, PriceListItem, SatCatalog
 
 
 class PriceListSerializer(serializers.ModelSerializer):
@@ -55,3 +55,51 @@ class SatCatalogSerializer(serializers.ModelSerializer):
 
 class SatCatalogBulkCreateSerializer(serializers.ListSerializer):
     child = SatCatalogSerializer()
+
+
+class ClaveProdServSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClaveProdServ
+        fields = [
+            'clave',
+            'descripcion',
+            'incluir_iva_trasladado',
+            'incluir_ieps_trasladado',
+            'palabras_similares',
+        ]
+
+
+class ClaveProdServSearchSerializer(serializers.ModelSerializer):
+    similarity = serializers.FloatField(read_only=True)
+
+    class Meta:
+        model = ClaveProdServ
+        fields = [
+            'clave',
+            'descripcion',
+            'incluir_iva_trasladado',
+            'incluir_ieps_trasladado',
+            'palabras_similares',
+            'similarity',
+        ]
+
+
+class ClaveUnidadSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = ClaveUnidad
+        fields = [
+            'clave',
+            'name',
+        ]
+
+
+class ClaveUnidadSearchSerializer(serializers.ModelSerializer):
+    similarity = serializers.FloatField(read_only=True)
+
+    class Meta:
+        model = ClaveUnidad
+        fields = [
+            'clave',
+            'name',
+            'similarity',
+        ]
