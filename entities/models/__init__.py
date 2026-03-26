@@ -1,4 +1,4 @@
-from .catalogs import PersonTitle, CompanySector, Country, JobPosition, Bank
+from .catalogs import PersonTitle, CompanySector, Country, JobPosition, Bank, Department, EmployeeStatus
 from .partner import (
 	Partner,
 	PartnerRole,
@@ -6,6 +6,7 @@ from .partner import (
 	PartnerContact,
 	PartnerBankAccount,
 )
+from .employees import Employee
 
 __all__ = [
 	'PersonTitle',
@@ -13,9 +14,12 @@ __all__ = [
 	'Country',
 	'JobPosition',
     'Bank',
+	'Department',
+	'EmployeeStatus',
 	'Partner',
 	'PartnerRole',
 	'PartnerAddress',
 	'PartnerContact',
 	'PartnerBankAccount',
+	'Employee',
 ]

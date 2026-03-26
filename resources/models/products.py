@@ -66,6 +66,7 @@ class ProductVariation(BaseModel):
     sku = models.CharField(max_length=100, unique=True, verbose_name='SKU')
     barcode = models.CharField(max_length=100, blank=True, default='')
     attributes = JSONField(default=dict, blank=True)
+    reference = models.CharField(max_length=100, blank=True, null=True, verbose_name='Reference')
 
     # Campos opcionales para sobrescribir (override) la información del padre
     override_name = models.CharField(max_length=255, blank=True, null=True, help_text="Déjalo en blanco para autogenerar.")

@@ -2,7 +2,7 @@ from django.core.exceptions import ValidationError
 from django.core.validators import RegexValidator
 from django.db import models
 
-from entities.models.catalogs import Country, JobPosition, PersonTitle
+from entities.models.catalogs import CompanySector, Country, JobPosition, PersonTitle
 from invoicing.models.sat import SatCatalog
 
 # Validación básica de RFC (personas físicas y morales)
@@ -20,6 +20,11 @@ class Partner(models.Model):
     PERSON_TYPE = [
         ('FISICA', 'Persona física'),
         ('MORAL',  'Persona moral'),
+    ]
+
+    SECTOR_CHOICES = [
+        ('PRIVATE', 'Privado'),
+        ('PUBLIC',  'Público'),
     ]
 
     # Identificación fiscal (CFDI 4.0)
@@ -48,6 +53,23 @@ class Partner(models.Model):
     tax_zip = models.CharField(
         max_length=10,
         help_text="Código postal del domicilio fiscal (CFDI 4.0)"
+    )
+
+    # Clasificación
+    sector = models.CharField(
+        max_length=10,
+        choices=SECTOR_CHOICES,
+        blank=True,
+        default='',
+        help_text="Sector del partner: Privado o Público",
+    )
+    company_sector = models.ForeignKey(
+        CompanySector,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='partners',
+        help_text="Sector/giro de la empresa (Tecnología, Educación, etc.)",
     )
 
     # Datos comerciales / contacto
@@ -204,6 +226,8 @@ class PartnerContact(models.Model):
     name = models.CharField(max_length=255)
     email = models.EmailField(blank=True)
     phone = models.CharField(max_length=30, blank=True)
+    phone_landline = models.CharField(max_length=30, blank=True, default='', help_text='Teléfono fijo')
+    phone_landline_ext = models.CharField(max_length=10, blank=True, default='', help_text='Extensión del teléfono fijo')
     job_position = models.ForeignKey(
         JobPosition, null=True, blank=True, on_delete=models.SET_NULL,
         related_name='partner_contacts'

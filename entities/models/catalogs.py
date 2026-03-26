@@ -83,3 +83,36 @@ class Bank(models.Model):
 
 	def __str__(self):
 		return f"{self.code} - {self.short_name}"
+
+class Department(models.Model):
+	"""Catálogo de áreas/departamentos: Ventas, TI, RRHH, etc."""
+	code = models.CharField(max_length=20, unique=True)
+	name = models.CharField(max_length=100)
+	description = models.CharField(max_length=255, blank=True, default='')
+	is_active = models.BooleanField(default=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Department'
+		verbose_name_plural = 'Departments'
+
+	def __str__(self):
+		return self.name
+
+class EmployeeStatus(models.Model):
+	"""Catálogo de estatus de empleado: Activo, Baja, Vacaciones, etc."""
+	code = models.CharField(max_length=20, unique=True)
+	name = models.CharField(max_length=100)
+	is_active = models.BooleanField(default=True)
+	created_at = models.DateTimeField(auto_now_add=True)
+	updated_at = models.DateTimeField(auto_now=True)
+
+	class Meta:
+		ordering = ['name']
+		verbose_name = 'Employee Status'
+		verbose_name_plural = 'Employee Statuses'
+
+	def __str__(self):
+		return self.name

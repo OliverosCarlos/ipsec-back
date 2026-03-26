@@ -1,7 +1,10 @@
 import json
+import unicodedata
+from datetime import date
 
 from rest_framework import serializers
 
+from core.models import Account
 from .models import (
     Partner,
     PartnerRole,
@@ -9,8 +12,12 @@ from .models import (
     PartnerContact,
     PartnerBankAccount,
     Bank,
+    Department,
+    EmployeeStatus,
+    Employee,
 )
-from .models.catalogs import PersonTitle, JobPosition
+from .models.catalogs import PersonTitle, JobPosition, CompanySector, Country
+from invoicing.models.sat import SatCatalog
 
 class PartnerAddressSerializer(serializers.ModelSerializer):
     class Meta:
@@ -41,6 +48,7 @@ class PartnerContactSerializer(serializers.ModelSerializer):
         fields = [
             'id', 'partner', 'partner_commercial_name',
             'name', 'email', 'phone',
+            'phone_landline', 'phone_landline_ext',
             'job_position', 'job_position_display',
             'gender', 'gender_display',
             'person_title', 'photo',
@@ -76,6 +84,7 @@ class PartnerContactFullReadOnlySerializer(serializers.ModelSerializer):
             'id', 'partner',
             # Contact fields
             'name', 'email', 'phone',
+            'phone_landline', 'phone_landline_ext',
             'job_position', 'job_position_display',
             'gender', 'gender_display',
             'person_title', 'person_title_display',
@@ -116,6 +125,122 @@ class PartnerRoleSerializer(serializers.ModelSerializer):
         read_only_fields = ['id']
 
 
+# ── Bulk-action item serializers ─────────────────────────
+
+ACTION_CHOICES = [('created', 'created'), ('updated', 'updated'), ('deleted', 'deleted')]
+
+
+class _BulkItemMixin(serializers.Serializer):
+    """Base mixin: adds 'action' flag and validates id presence for update/delete."""
+    action = serializers.ChoiceField(choices=ACTION_CHOICES)
+    id = serializers.IntegerField(required=False, allow_null=True)
+
+    def validate(self, attrs):
+        action = attrs.get('action')
+        if action in ('updated', 'deleted') and not attrs.get('id'):
+            raise serializers.ValidationError({'id': 'Required for action "updated" or "deleted".'})
+        return attrs
+
+
+class PartnerRoleBulkItemSerializer(_BulkItemMixin):
+    role = serializers.ChoiceField(choices=PartnerRole.ROLE_CHOICES, required=False)
+    diot_third_type = serializers.PrimaryKeyRelatedField(
+        queryset=SatCatalog.objects.filter(catalog='DIOT_TipoTercero'),
+        required=False, allow_null=True,
+    )
+    diot_operation_type = serializers.PrimaryKeyRelatedField(
+        queryset=SatCatalog.objects.filter(catalog='DIOT_TipoOperacion'),
+        required=False, allow_null=True,
+    )
+    default_currency = serializers.PrimaryKeyRelatedField(
+        queryset=SatCatalog.objects.filter(catalog='c_Moneda'),
+        required=False, allow_null=True,
+    )
+    payment_terms_days = serializers.IntegerField(required=False, default=0)
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if attrs['action'] in ('created', 'updated') and not attrs.get('role'):
+            raise serializers.ValidationError({'role': 'Required for action "created" or "updated".'})
+        return attrs
+
+
+class PartnerAddressBulkItemSerializer(_BulkItemMixin):
+    kind = serializers.ChoiceField(choices=PartnerAddress.KIND_CHOICES, required=False)
+    street = serializers.CharField(required=False, allow_blank=True, default='')
+    ext_no = serializers.CharField(required=False, allow_blank=True, default='')
+    int_no = serializers.CharField(required=False, allow_blank=True, default='')
+    neighborhood = serializers.CharField(required=False, allow_blank=True, default='')
+    city = serializers.CharField(required=False, allow_blank=True, default='')
+    state = serializers.CharField(required=False, allow_blank=True, default='')
+    country = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(),
+        required=False,
+    )
+    zip_code = serializers.CharField(required=False)
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if attrs['action'] == 'created' and not attrs.get('zip_code'):
+            raise serializers.ValidationError({'zip_code': 'Required for action "created".'})
+        return attrs
+
+
+class PartnerContactBulkItemSerializer(_BulkItemMixin):
+    name = serializers.CharField(required=False)
+    email = serializers.EmailField(required=False, allow_blank=True, default='')
+    phone = serializers.CharField(required=False, allow_blank=True, default='')
+    phone_landline = serializers.CharField(required=False, allow_blank=True, default='')
+    phone_landline_ext = serializers.CharField(required=False, allow_blank=True, default='')
+    job_position = serializers.PrimaryKeyRelatedField(
+        queryset=JobPosition.objects.all(), required=False, allow_null=True,
+    )
+    gender = serializers.ChoiceField(choices=PartnerContact.GENDER_CHOICES, required=False, default='N')
+    person_title = serializers.PrimaryKeyRelatedField(
+        queryset=PersonTitle.objects.all(), required=False, allow_null=True,
+    )
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if attrs['action'] == 'created' and not attrs.get('name'):
+            raise serializers.ValidationError({'name': 'Required for action "created".'})
+        return attrs
+
+
+class PartnerBulkUpdateSerializer(serializers.Serializer):
+    """
+    Payload para actualización bulk de Partner y sus relaciones.
+    Los campos del partner son opcionales; si se envían se actualizan.
+    Las listas de relaciones son opcionales; si se envían se procesan por action.
+    """
+    # Partner fields (all optional)
+    rfc = serializers.CharField(required=False)
+    legal_name = serializers.CharField(required=False)
+    person_type = serializers.ChoiceField(choices=Partner.PERSON_TYPE, required=False)
+    tax_regime = serializers.PrimaryKeyRelatedField(
+        queryset=SatCatalog.objects.filter(catalog='c_RegimenFiscal'),
+        required=False,
+    )
+    tax_zip = serializers.CharField(required=False)
+    commercial_name = serializers.CharField(required=False, allow_blank=True)
+    email_billing = serializers.EmailField(required=False, allow_blank=True)
+    phone = serializers.CharField(required=False, allow_blank=True)
+    country = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(),
+        required=False,
+    )
+    active = serializers.BooleanField(required=False)
+    sector = serializers.ChoiceField(choices=Partner.SECTOR_CHOICES, required=False, allow_blank=True)
+    company_sector = serializers.PrimaryKeyRelatedField(
+        queryset=CompanySector.objects.all(), required=False, allow_null=True,
+    )
+
+    # Nested relations with action flags
+    roles = PartnerRoleBulkItemSerializer(many=True, required=False)
+    addresses = PartnerAddressBulkItemSerializer(many=True, required=False)
+    contacts = PartnerContactBulkItemSerializer(many=True, required=False)
+
+
 class PartnerAddressNestedSerializer(serializers.ModelSerializer):
     """Serializer for addresses nested inside PartnerSerializer (no partner field)."""
     class Meta:
@@ -132,7 +257,9 @@ class PartnerContactNestedSerializer(serializers.ModelSerializer):
     class Meta:
         model = PartnerContact
         fields = [
-            'id', 'name', 'email', 'phone', 'job_position',
+            'id', 'name', 'email', 'phone',
+            'phone_landline', 'phone_landline_ext',
+            'job_position',
             'gender', 'person_title', 'photo',
         ]
         read_only_fields = ['id']
@@ -174,6 +301,8 @@ class PartnerSerializer(serializers.ModelSerializer):
             'addresses',
             'contacts',
             'roles',
+            'sector',
+            'company_sector'
         ]
         read_only_fields = ['id', 'tax_regime_display']
 
@@ -286,7 +415,9 @@ class PartnerContactReadSerializer(serializers.ModelSerializer):
     class Meta:
         model = PartnerContact
         fields = [
-            'id', 'name', 'email', 'phone', 'job_position', 'job_position_display',
+            'id', 'name', 'email', 'phone',
+            'phone_landline', 'phone_landline_ext',
+            'job_position', 'job_position_display',
             'gender', 'gender_display', 'person_title', 'person_title_display', 'photo',
         ]
 
@@ -330,6 +461,8 @@ class PartnerReadSerializer(serializers.ModelSerializer):
     tax_regime_display = serializers.SerializerMethodField()
     person_type_display = serializers.CharField(source='get_person_type_display', read_only=True)
     country_display = serializers.CharField(source='country.name', default=None, read_only=True)
+    sector_display = serializers.CharField(source='get_sector_display', read_only=True)
+    company_sector_display = serializers.CharField(source='company_sector.name', default=None, read_only=True)
 
     class Meta:
         model = Partner
@@ -352,6 +485,10 @@ class PartnerReadSerializer(serializers.ModelSerializer):
             'addresses',
             'contacts',
             'roles',
+            'sector',
+            'sector_display',
+            'company_sector',
+            'company_sector_display',
         ]
 
     def get_tax_regime_display(self, obj):
@@ -409,3 +546,155 @@ class JobPositionSerializer(serializers.ModelSerializer):
             'updated_at',
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class DepartmentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Department
+        fields = [
+            'id',
+            'code',
+            'name',
+            'description',
+            'is_active',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class CompanySectorSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = CompanySector
+        fields = [
+            'id',
+            'code',
+            'name',
+            'description',
+            'is_active',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class EmployeeStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EmployeeStatus
+        fields = [
+            'id',
+            'code',
+            'name',
+            'is_active',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'created_at', 'updated_at']
+
+
+class EmployeeSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(read_only=True)
+    age = serializers.IntegerField(read_only=True)
+
+    class Meta:
+        model = Employee
+        fields = [
+            'id',
+            'first_name',
+            'last_name_father',
+            'last_name_mother',
+            'date_of_birth',
+            'age',
+            'gender',
+            'email',
+            'phone',
+            'photo',
+            'department',
+            'job_position',
+            'status',
+            'account',
+            'full_name',
+            'is_active',
+            'created_at',
+            'updated_at',
+        ]
+        read_only_fields = ['id', 'account', 'created_at', 'updated_at']
+
+    @staticmethod
+    def _normalize(text):
+        """Remove accents and convert to lowercase ASCII."""
+        nfkd = unicodedata.normalize('NFKD', text)
+        return ''.join(c for c in nfkd if not unicodedata.combining(c)).lower()
+
+    def _build_username(self, first_name, last_name_father, last_name_mother):
+        """Generate a unique username: first_name.last_father.last_mother"""
+        parts = [
+            self._normalize(first_name),
+            self._normalize(last_name_father),
+        ]
+        if last_name_mother:
+            parts.append(self._normalize(last_name_mother))
+        base = '.'.join(parts)
+        username = base
+        counter = 1
+        while Account.objects.filter(username=username).exists():
+            username = f'{base}{counter}'
+            counter += 1
+        return username
+
+    def create(self, validated_data):
+        validated_data.pop('account', None)
+        first_name = validated_data['first_name']
+        last_name_father = validated_data['last_name_father']
+        last_name_mother = validated_data.get('last_name_mother', '')
+
+        username = self._build_username(first_name, last_name_father, last_name_mother)
+        default_password = f'Tepic{date.today().year}'
+
+        account = Account.objects.create_user(
+            username=username,
+            password=default_password,
+            email=validated_data.get('email', ''),
+            first_name=first_name,
+            last_name=last_name_father,
+        )
+        validated_data['account'] = account
+        return super().create(validated_data)
+
+
+class EmployeeReadSerializer(serializers.ModelSerializer):
+    full_name = serializers.CharField(read_only=True)
+    age = serializers.IntegerField(read_only=True)
+    gender_display = serializers.CharField(source='get_gender_display', read_only=True)
+    department_display = serializers.CharField(source='department.name', default=None, read_only=True)
+    job_position_display = serializers.CharField(source='job_position.name', default=None, read_only=True)
+    status_display = serializers.CharField(source='status.name', default=None, read_only=True)
+    account_display = serializers.CharField(source='account.username', default=None, read_only=True)
+
+    class Meta:
+        model = Employee
+        fields = [
+            'id',
+            'first_name',
+            'last_name_father',
+            'last_name_mother',
+            'date_of_birth',
+            'age',
+            'gender',
+            'gender_display',
+            'email',
+            'phone',
+            'photo',
+            'department',
+            'department_display',
+            'job_position',
+            'job_position_display',
+            'status',
+            'status_display',
+            'account',
+            'account_display',
+            'full_name',
+            'is_active',
+            'created_at',
+            'updated_at',
+        ]
