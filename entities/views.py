@@ -34,6 +34,7 @@ from .serializers import (
 	CompanySectorSerializer,
 	EmployeeSerializer,
 	EmployeeReadSerializer,
+	PartnerDashboardSerializer,
 )
 
 
@@ -344,4 +345,21 @@ class EmployeeRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
 		if self.request.method == 'GET':
 			return EmployeeReadSerializer
 		return EmployeeSerializer
+
+
+# ── Partner Dashboard ─────────────────────────────────────
+
+class PartnerDashboardView(APIView):
+	def get(self, request):
+		from django.db.models import Count, Q
+
+		data = Partner.objects.aggregate(
+			total_partners=Count('id'),
+			total_customers=Count('id', filter=Q(roles__role='CUSTOMER'), distinct=True),
+			total_suppliers=Count('id', filter=Q(roles__role='SUPPLIER'), distinct=True),
+			total_private_sector=Count('id', filter=Q(sector='PRIVATE')),
+		)
+
+		serializer = PartnerDashboardSerializer(data)
+		return Response(serializer.data)
 

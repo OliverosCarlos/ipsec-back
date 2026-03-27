@@ -662,6 +662,13 @@ class EmployeeSerializer(serializers.ModelSerializer):
         return super().create(validated_data)
 
 
+class PartnerDashboardSerializer(serializers.Serializer):
+    total_partners = serializers.IntegerField()
+    total_customers = serializers.IntegerField()
+    total_suppliers = serializers.IntegerField()
+    total_private_sector = serializers.IntegerField()
+
+
 class EmployeeReadSerializer(serializers.ModelSerializer):
     full_name = serializers.CharField(read_only=True)
     age = serializers.IntegerField(read_only=True)

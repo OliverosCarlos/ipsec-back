@@ -15,6 +15,7 @@ from .views import (
     EmployeeStatusListCreateView, EmployeeStatusRetrieveUpdateDestroyView,
     CompanySectorListCreateView, CompanySectorRetrieveUpdateDestroyView,
     EmployeeListCreateView, EmployeeRetrieveUpdateDestroyView,
+    PartnerDashboardView,
 )
 
 urlpatterns = [
@@ -47,4 +48,6 @@ urlpatterns = [
     # Employees
     path('employees/', EmployeeListCreateView.as_view(), name='employee-list-create'),
     path('employees/<int:pk>/', EmployeeRetrieveUpdateDestroyView.as_view(), name='employee-detail'),
+    # Dashboard
+    path('partners/dashboard/', PartnerDashboardView.as_view(), name='partner-dashboard'),
 ]
