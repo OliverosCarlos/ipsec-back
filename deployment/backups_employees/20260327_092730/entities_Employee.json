@@ -1,0 +1,23 @@
+[
+{
+  "model": "entities.employee",
+  "pk": 1,
+  "fields": {
+    "first_name": "Carlos",
+    "last_name_father": "R",
+    "last_name_mother": "Oliveros",
+    "date_of_birth": "1996-08-21",
+    "gender": "M",
+    "email": "carlos.oliveros@ipsec.mx",
+    "phone": "3111234567",
+    "photo": "employees/photos/blue-whale.jpg",
+    "department": 1,
+    "job_position": 8,
+    "status": null,
+    "account": 2,
+    "is_active": true,
+    "created_at": "2026-03-18T19:25:28.410Z",
+    "updated_at": "2026-03-18T19:25:28.410Z"
+  }
+}
+]

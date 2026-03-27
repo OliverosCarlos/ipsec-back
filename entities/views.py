@@ -1,4 +1,5 @@
 from rest_framework import generics, status
+from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -301,9 +302,16 @@ class EmployeeStatusRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIV
 
 # ── CompanySector ─────────────────────────────────────────
 
+class CompanySectorPagination(PageNumberPagination):
+	page_size = 100
+	page_size_query_param = 'page_size'
+	max_page_size = 100
+
+
 class CompanySectorListCreateView(generics.ListCreateAPIView):
 	queryset = CompanySector.objects.all()
 	serializer_class = CompanySectorSerializer
+	pagination_class = CompanySectorPagination
 	search_fields = ['code', 'name']
 	filterset_fields = ['is_active']
 
@@ -314,6 +322,7 @@ class CompanySectorRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVi
 
 
 # ── Employee ──────────────────────────────────────────────
+
 
 class EmployeeListCreateView(generics.ListCreateAPIView):
 	queryset = Employee.objects.select_related('department', 'job_position', 'status', 'account')

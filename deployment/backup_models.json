@@ -4,9 +4,12 @@
   "entities.Country",
   "entities.JobPosition",
   "entities.Bank",
+  "entities.Department",
   "invoicing.SatCatalog",
   "resources.Brand",
   "resources.Type",
   "resources.Category",
-  "resources.UnitOfMeasure"
+  "resources.UnitOfMeasure",
+  "invoicing.ClaveProdServ",
+  "invoicing.ClaveUnidad"
 ]
