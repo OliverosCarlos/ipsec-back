@@ -2,6 +2,7 @@ from decimal import Decimal
 
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.db import transaction
 
 from core.models import BaseModel
 from ipsec_back import settings
@@ -98,12 +99,14 @@ class FastQuotation(BaseModel):
         CONFIRMED = 'confirmed', 'Confirmada'
         CANCELLED = 'cancelled', 'Cancelada'
 
-    # --- Propuesta padre ---
+    # --- Propuesta padre (opcional) ---
     proposal = models.ForeignKey(
         FastSalesProposal,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
         related_name='quotations',
-        help_text='Propuesta de venta a la que pertenece esta cotización',
+        help_text='Propuesta de venta a la que pertenece esta cotización (opcional)',
     )
 
     # --- Identificación auxiliar ---
@@ -203,8 +206,29 @@ class FastQuotation(BaseModel):
         ]
 
     def __str__(self):
-        label = self.subject or self.partner_name or str(self.id)[:8]
+        label = self.description or self.name or str(self.id)[:8]
         return f'FQ-{self.pk} - {label}'
+
+    # --- Convertir a propuesta ---
+    @transaction.atomic
+    def convert_to_proposal(self, name='', objective='', description=''):
+        """
+        Convierte esta cotización rápida independiente en una FastSalesProposal.
+        Si ya pertenece a una propuesta, retorna la propuesta existente.
+        """
+        if self.proposal is not None:
+            return self.proposal
+
+        proposal = FastSalesProposal.objects.create(
+            name=name or self.name or f'Propuesta desde FQ-{self.pk}',
+            objective=objective,
+            description=description or self.description,
+            salesperson=self.salesperson,
+            status=FastSalesProposal.Status.DRAFT,
+        )
+        self.proposal = proposal
+        self.save(update_fields=['proposal'])
+        return proposal
 
     # --- Cálculo de totales ---
     def compute_totals(self):

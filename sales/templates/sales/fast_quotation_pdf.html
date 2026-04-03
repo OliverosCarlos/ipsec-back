@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="utf-8">
+    <title>Cotización FQ-{{ quotation.pk }}</title>
+    <style>
+        @page {
+            size: letter;
+            margin: 1.5cm 1.5cm 2cm 1.5cm;
+            @frame footer {
+                -pdf-frame-content: page-footer;
+                bottom: 0;
+                margin-left: 1.5cm;
+                margin-right: 1.5cm;
+                height: 1cm;
+            }
+        }
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 9pt;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        /* ── Company Header ──────────────────── */
+        .company-header {
+            overflow: hidden;
+            margin-bottom: 12px;
+            background-color: #f8f8f8;
+            padding: 12px 15px;
+            color: #000;
+        }
+        .company-info {
+            float: left;
+            width: 55%;
+        }
+        .company-info .company-name {
+            font-size: 10pt;
+            font-weight: bold;
+            color: #000;
+            margin: 0;
+        }
+        .company-info p {
+            margin: 0;
+            font-size: 7.5pt;
+            color: #4e4e4e;
+            line-height: 1.4;
+        }
+        .company-logos {
+            float: right;
+            width: 40%;
+            text-align: right;
+        }
+        .company-logos img {
+            vertical-align: middle;
+        }
+
+        /* ── Client Data Box ─────────────────── */
+        .client-box {
+            border: 2px solid #00a79d;
+            padding: 0;
+            margin-bottom: 12px;
+        }
+        .client-box-header {
+            overflow: hidden;
+            background-color: #e8f8f7;
+            border-bottom: 1px solid #00a79d;
+            padding: 5px 10px;
+        }
+        .client-box-header .title {
+            float: left;
+            font-size: 9pt;
+            font-weight: bold;
+            color: #00a79d;
+        }
+        .client-box-header .quotation-number {
+            float: right;
+            font-size: 9pt;
+            font-weight: bold;
+            color: #00a79d;
+        }
+        .client-box-body {
+            padding: 8px 10px;
+            overflow: hidden;
+        }
+        .client-left {
+            float: left;
+            width: 48%;
+        }
+        .client-right {
+            float: right;
+            width: 48%;
+        }
+        .client-box-body table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .client-box-body td {
+            padding: 1px 0;
+            font-size: 8pt;
+            vertical-align: top;
+        }
+        .client-box-body td.label {
+            font-weight: bold;
+            color: #000;
+            width: 35%;
+            white-space: nowrap;
+            padding-right: 5px;
+        }
+
+        /* ── Intro paragraph ─────────────────── */
+        .intro {
+            font-size: 8.5pt;
+            margin: 10px 0;
+            line-height: 1.4;
+        }
+        .intro .company-bold {
+            font-weight: bold;
+        }
+
+        /* ── Project Title ───────────────────── */
+        .project-title {
+            font-size: 11pt;
+            font-weight: bold;
+            color: #000;
+            margin: 8px 0 10px 0;
+        }
+
+        /* ── Lines table ─────────────────────── */
+        .lines-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 5px;
+        }
+        .lines-table thead th {
+            background-color: #e0e0e0;
+            color: #000;
+            padding: 5px 6px;
+            text-align: center;
+            font-size: 7.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+            border: 1px solid #bbb;
+        }
+        .lines-table tbody td {
+            padding: 4px 6px;
+            border: 1px solid #ddd;
+            font-size: 8pt;
+            vertical-align: top;
+        }
+        .lines-table tbody td.center {
+            text-align: center;
+        }
+        .lines-table tbody td.right {
+            text-align: right;
+        }
+
+        /* ── Totals ──────────────────────────── */
+        .totals-section {
+            overflow: hidden;
+            margin-top: 5px;
+            margin-bottom: 15px;
+        }
+        .totals-table {
+            float: right;
+            border-collapse: collapse;
+        }
+        .totals-table td {
+            padding: 2px 8px;
+            font-size: 9pt;
+        }
+        .totals-table td.label {
+            text-align: right;
+            font-weight: bold;
+            color: #00a79d;
+        }
+        .totals-table td.value {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* ── Signature & Bank ────────────────── */
+        .bottom-section {
+            overflow: hidden;
+            margin-top: 30px;
+        }
+        .signature-block {
+            float: left;
+            width: 45%;
+            text-align: center;
+            padding-top: 40px;
+        }
+        .signature-line {
+            border-top: 1px solid #000;
+            width: 80%;
+            margin: 0 auto;
+            padding-top: 5px;
+        }
+        .signature-name {
+            font-size: 8.5pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .signature-title {
+            font-size: 8pt;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        .bank-block {
+            float: right;
+            width: 48%;
+            border: 1px solid #bbb;
+            font-size: 8pt;
+        }
+        .bank-block-header {
+            background-color: #e0e0e0;
+            padding: 4px 8px;
+            font-weight: bold;
+            font-size: 8.5pt;
+            text-align: right;
+        }
+        .bank-block-body {
+            padding: 8px;
+        }
+        .bank-block-body p {
+            margin: 0 0 2px 0;
+        }
+        .bank-block-body .bank-label {
+            font-weight: bold;
+        }
+
+        /* ── Notes ───────────────────────────── */
+        .notes-section {
+            margin-top: 15px;
+            padding-top: 8px;
+            border-top: 1px solid #ddd;
+        }
+        .notes-section h3 {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #00a79d;
+            margin: 0 0 4px 0;
+        }
+        .notes-section p {
+            font-size: 8.5pt;
+            color: #444;
+            margin: 0;
+            white-space: pre-wrap;
+        }
+
+        /* ── Footer ──────────────────────────── */
+        #page-footer {
+            text-align: center;
+            font-size: 7pt;
+            color: #aaa;
+        }
+    </style>
+</head>
+<body>
+{% load static %}
+
+    <!-- ══ COMPANY HEADER ══ -->
+    <div class="company-header">
+        <div class="company-info">
+            <p class="company-name">INGENIERÍA PROYECTOS Y SERVICIOS EN COMUNICACIONES S.A. DE C.V</p>
+            <p>
+                RFC: IPY131001PI6<br>
+                CALLE MONTES 199<br>
+                FRACCIONAMIENTO PARQUE ECOLÓGICO<br>
+                TEPIC, NAYARIT, MEXICO. 63173<br>
+                TEL: (311) 160-5000<br>
+                hola@ipsec.mx
+            </p>
+        </div>
+        <div class="company-logos">
+            <img src="{% static 'sales/img/logoipsec.png' %}" height="48" width="48">
+            &nbsp;&nbsp;
+            <img src="{% static 'sales/img/cisco_partner_logo.webp' %}" height="48" width="48">
+        </div>
+    </div>
+
+    <!-- ══ CLIENT DATA BOX ══ -->
+    <div class="client-box">
+        <div class="client-box-header">
+            <span class="title">DATOS DEL CLIENTE</span>
+            <span class="quotation-number">COTIZACIÓN NO. FQ-{{ quotation.pk }}</span>
+        </div>
+        <div class="client-box-body">
+            <div class="client-left">
+                <table>
+                    {% if quotation.name %}
+                    <tr>
+                        <td class="label">NOMBRE:</td>
+                        <td>{{ quotation.name }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if quotation.proposal and quotation.proposal.partner %}
+                    <tr>
+                        <td class="label">CLIENTE:</td>
+                        <td>{{ quotation.proposal.partner.legal_name|default:quotation.proposal.partner }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if quotation.description %}
+                    <tr>
+                        <td class="label">PROYECTO:</td>
+                        <td>{{ quotation.description }}</td>
+                    </tr>
+                    {% endif %}
+                    {% if quotation.validity_date %}
+                    <tr>
+                        <td class="label">VIGENCIA:</td>
+                        <td>{{ quotation.validity_date|date:"d/m/Y" }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+            <div class="client-right">
+                <table>
+                    <tr>
+                        <td class="label">FECHA:</td>
+                        <td>{{ quotation.date|date:"j" }} {{ quotation.date|date:"F"|upper }} {{ quotation.date|date:"Y" }}</td>
+                    </tr>
+                    <tr>
+                        <td class="label">MONEDA:</td>
+                        <td>{{ quotation.currency }}</td>
+                    </tr>
+                    {% if quotation.salesperson %}
+                    <tr>
+                        <td class="label">EJECUTIVO:</td>
+                        <td>{{ quotation.salesperson.get_full_name|default:quotation.salesperson.email|upper }}</td>
+                    </tr>
+                    {% endif %}
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ INTRO TEXT ══ -->
+    <p class="intro">
+        Por medio de la presente <span class="company-bold">INGENIERÍA PROYECTOS Y SERVICIOS EN COMUNICACIONES S.A. DE C.V</span>
+        pone a su disposición la siguiente cotización para cumplir con los requerimientos del proyecto:
+    </p>
+
+    <!-- ══ PROJECT TITLE ══ -->
+    {% if quotation.description %}
+    <div class="project-title">{{ quotation.description|upper }}</div>
+    {% endif %}
+
+    <!-- ══ LINES TABLE ══ -->
+    <table class="lines-table">
+        <thead>
+            <tr>
+                <th style="width: 7%;">PARTIDA</th>
+                <th style="width: 10%;"># PARTE</th>
+                <th style="width: 31%;">DESCRIPCIÓN</th>
+                <th style="width: 9%;">CANTIDAD</th>
+                <th style="width: 12%;">P. UNITARIO</th>
+                <th style="width: 12%;">SUBTOTAL</th>
+                <th style="width: 7%;">DESC.</th>
+                <th style="width: 12%;">TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for line in lines %}
+            <tr>
+                <td class="center">{{ forloop.counter }}</td>
+                <td class="center">{{ line.product_variation.sku|default:"-" }}</td>
+                <td>
+                    {% if line.description %}{{ line.description }}{% else %}{{ line.product_variation.display_name }}{% endif %}
+                </td>
+                <td class="center">{{ line.quantity|floatformat:0 }}</td>
+                <td class="right">${{ line.unit_price|floatformat:2 }}</td>
+                <td class="right">${{ line.subtotal|floatformat:2 }}</td>
+                <td class="center">{{ line.discount_percent|floatformat:0 }} %</td>
+                <td class="right">${{ line.total|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" style="text-align: center; color: #999; padding: 15px;">
+                    Sin líneas de detalle
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- ══ TOTALS ══ -->
+    <div class="totals-section">
+        <table class="totals-table">
+            <tr>
+                <td class="label">SUBTOTAL:</td>
+                <td class="value">${{ quotation.amount_subtotal|floatformat:2 }}</td>
+            </tr>
+            <tr>
+                <td class="label">IVA:</td>
+                <td class="value">${{ quotation.amount_tax|floatformat:2 }}</td>
+            </tr>
+            {% if quotation.amount_discount %}
+            <tr>
+                <td class="label">DESCUENTO:</td>
+                <td class="value">-${{ quotation.amount_discount|floatformat:2 }}</td>
+            </tr>
+            {% endif %}
+            <tr>
+                <td class="label" style="color: #c0392b;">TOTAL:</td>
+                <td class="value" style="color: #c0392b;">${{ quotation.amount_total|floatformat:2 }}</td>
+            </tr>
+        </table>
+    </div>
+
+    <!-- ══ SIGNATURE & BANK DATA ══ -->
+    <div class="bottom-section">
+        <div class="signature-block">
+            <div class="signature-line">
+                {% if quotation.salesperson %}
+                <div class="signature-name">{{ quotation.salesperson.get_full_name|default:quotation.salesperson.email|upper }}</div>
+                <div class="signature-title">PROMOTOR DE VENTAS</div>
+                {% else %}
+                <div class="signature-name">FIRMA</div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="bank-block">
+            <div class="bank-block-header">DATOS BANCARIOS</div>
+            <div class="bank-block-body">
+                <p><span class="bank-label">Banco: Banorte</span> &nbsp;&nbsp;&nbsp; Sucursal: 7802</p>
+                <p><span class="bank-label">Cuenta en MXN</span></p>
+                <p>Cuenta: 0208137751</p>
+                <p>Clabe: 072 560 00208137751 6</p>
+                <br>
+                <p><span class="bank-label">Cuenta en USD</span></p>
+                <p>Cuenta: 0591572447</p>
+                <p>Clabe: 072 560 00591572447 8</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- ══ NOTES ══ -->
+    {% if quotation.external_notes %}
+    <div class="notes-section">
+        <h3>NOTAS</h3>
+        <p>{{ quotation.external_notes }}</p>
+    </div>
+    {% endif %}
+
+    <!-- ══ FOOTER ══ -->
+    <div id="page-footer">
+        Este documento no tiene validez fiscal
+    </div>
+
+</body>
+</html>

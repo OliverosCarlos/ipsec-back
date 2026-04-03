@@ -281,11 +281,12 @@ class FastQuotationReadSerializer(serializers.ModelSerializer):
     currency_display = serializers.CharField(source='currency.description', read_only=True)
     status_display = serializers.CharField(source='get_status_display', read_only=True)
     salesperson_display = serializers.SerializerMethodField()
+    proposal_display = serializers.CharField(source='proposal.name', default=None, read_only=True)
 
     class Meta:
         model = FastQuotation
         fields = [
-            'id', 'proposal', 'name', 'description',
+            'id', 'proposal', 'proposal_display', 'name', 'description',
             'date', 'validity_date',
             'currency', 'currency_display',
             'status', 'status_display',
@@ -363,3 +364,12 @@ class FastSalesProposalReadSerializer(serializers.ModelSerializer):
             full = obj.salesperson.get_full_name()
             return full if full else obj.salesperson.username
         return None
+
+
+# ── Convertir cotización a propuesta ───────────────────────────
+
+class ConvertToProposalSerializer(serializers.Serializer):
+    """Datos opcionales para crear la propuesta al convertir una cotización."""
+    name = serializers.CharField(max_length=200, required=False, default='')
+    objective = serializers.CharField(required=False, default='')
+    description = serializers.CharField(required=False, default='')

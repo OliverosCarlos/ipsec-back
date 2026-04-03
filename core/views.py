@@ -10,19 +10,21 @@ from rest_framework import generics, viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from collections import defaultdict
+from django.contrib.auth import login
 from django.contrib.contenttypes.models import ContentType
 from rest_framework.views import APIView
 
 
 class LoginView(KnoxLoginView):
     """Login con username/password → devuelve token Knox."""
+    authentication_classes = []
     permission_classes = [permissions.AllowAny]
 
     def post(self, request, format=None):
         serializer = LoginSerializer(data=request.data, context={'request': request})
         serializer.is_valid(raise_exception=True)
         user = serializer.validated_data['user']
-        request.user = user
+        login(request, user)
         response = super().post(request, format=None)
 
         account_data = {
