@@ -6,6 +6,7 @@ from django.db import transaction
 
 from core.models import BaseModel
 from ipsec_back import settings
+from resources.models.products import ProdServVariation
 
 
 class FastSalesProposal(BaseModel):
@@ -266,11 +267,11 @@ class FastQuotationLine(BaseModel):
     )
 
     # --- Producto ---
-    product_variation = models.ForeignKey(
-        'resources.ProductVariation',
+    product_service_variation = models.ForeignKey(
+        ProdServVariation,
         on_delete=models.PROTECT,
         related_name='fast_quotation_lines',
-        help_text='Variación de producto cotizada',
+        help_text='Variación de producto o servicio cotizada',
     )
     description = models.CharField(
         max_length=500,
@@ -285,7 +286,7 @@ class FastQuotationLine(BaseModel):
         decimal_places=4,
         validators=[MinValueValidator(Decimal('0.0001'))],
     )
-    unit_of_measure = models.ForeignKey(
+    clave_unidad = models.ForeignKey(
         'invoicing.ClaveUnidad',
         on_delete=models.PROTECT,
         related_name='fast_quotation_lines',

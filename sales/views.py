@@ -76,7 +76,7 @@ class QuotationLineRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVi
 class FastQuotationListCreateView(generics.ListCreateAPIView):
     queryset = FastQuotation.objects.select_related(
         'proposal', 'currency', 'salesperson',
-    ).prefetch_related('lines__product_variation', 'lines__unit_of_measure')
+    ).prefetch_related('lines__product_service_variation', 'lines__clave_unidad')
     search_fields = ['name', 'description', 'proposal__name']
     filterset_fields = ['status', 'proposal', 'currency', 'salesperson', 'is_active']
 
@@ -89,7 +89,9 @@ class FastQuotationListCreateView(generics.ListCreateAPIView):
 class FastQuotationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = FastQuotation.objects.select_related(
         'proposal', 'currency', 'salesperson',
-    ).prefetch_related('lines__product_variation', 'lines__unit_of_measure')
+    ).prefetch_related('lines__product_service_variation', 'lines__clave_unidad')
+    search_fields = ['name', 'description', 'proposal__name']
+    filterset_fields = ['status', 'proposal', 'currency', 'salesperson', 'is_active']
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -109,7 +111,7 @@ class FastQuotationLineListCreateView(generics.ListCreateAPIView):
 
 class FastQuotationLineRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = FastQuotationLine.objects.select_related(
-        'fast_quotation', 'product_variation', 'unit_of_measure',
+        'fast_quotation', 'product_service_variation', 'clave_unidad',
     )
     serializer_class = FastQuotationLineSerializer
 
@@ -120,8 +122,8 @@ class FastSalesProposalListCreateView(generics.ListCreateAPIView):
     queryset = FastSalesProposal.objects.select_related(
         'partner', 'partner_contact', 'salesperson',
     ).prefetch_related(
-        'quotations__lines__product_variation',
-        'quotations__lines__unit_of_measure',
+        'quotations__lines__product_service_variation',
+        'quotations__lines__clave_unidad',
         'quotations__currency',
     )
     search_fields = ['name', 'objective', 'partner__legal_name']
@@ -137,8 +139,8 @@ class FastSalesProposalRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyA
     queryset = FastSalesProposal.objects.select_related(
         'partner', 'partner_contact', 'salesperson',
     ).prefetch_related(
-        'quotations__lines__product_variation',
-        'quotations__lines__unit_of_measure',
+        'quotations__lines__product_service_variation',
+        'quotations__lines__clave_unidad',
         'quotations__currency',
     )
 
@@ -208,7 +210,7 @@ class FastQuotationPDFView(APIView):
             )
 
         lines = quotation.lines.select_related(
-            'product_variation__product', 'unit_of_measure',
+            'product_service_variation__product', 'clave_unidad',
         ).order_by('sequence')
 
         html_string = render_to_string('sales/fast_quotation_pdf.html', {

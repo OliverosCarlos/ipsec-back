@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from resources.serializers import ProductVariationSerializer
+# from resources.serializers import ProductVariationSerializer
 
 from .models import ClaveProdServ, ClaveUnidad, PriceList, PriceListItem, SatCatalog
 
@@ -24,7 +24,7 @@ class PriceListSerializer(serializers.ModelSerializer):
 
 class PriceListItemSerializer(serializers.ModelSerializer):
     price_list_detail = PriceListSerializer(source='price_list', read_only=True)
-    product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
+    # product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
 
     class Meta:
         model = PriceListItem
@@ -33,7 +33,7 @@ class PriceListItemSerializer(serializers.ModelSerializer):
             'price_list',
             'price_list_detail',
             'product_variation',
-            'product_variation_detail',
+            # 'product_variation_detail',
             'price',
             'created_at',
             'updated_at',
@@ -45,6 +45,7 @@ class SatCatalogSerializer(serializers.ModelSerializer):
     class Meta:
         model = SatCatalog
         fields = [
+            'id',
             'code',
             'catalog',
             'description',

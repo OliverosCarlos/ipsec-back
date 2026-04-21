@@ -18,15 +18,17 @@ class DeployTracker:
             "status": status,
             "status_info": status_info,
         }
-        response = requests.patch(url, json=payload)
-        response.raise_for_status()
-        return response.json()
+        # response = requests.patch(url, json=payload)
+        # response.raise_for_status()
+        # return response.json()
+        return ''
 
     def reset(self, step_code):
         url = f"{self.base_url}/api/steps/reset/{step_code}"
-        response = requests.post(url)
-        response.raise_for_status()
-        return response.json()
+        # response = requests.post(url)
+        # response.raise_for_status()
+        # return response.json()
+        return ''
 
     def add_substep(self, step_code, info, status):
         url = f"{self.base_url}/api/substeps/by-step-code"
@@ -35,9 +37,10 @@ class DeployTracker:
             "info": info,
             "status": status,
         }
-        response = requests.post(url, json=payload)
-        response.raise_for_status()
-        return response.json()
+        # response = requests.post(url, json=payload)
+        # response.raise_for_status()
+        # return response.json()
+        return ''
 
     def success(self, step_code, info):
         return self.add_substep(step_code, info, status="success")

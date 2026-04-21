@@ -50,7 +50,7 @@ class CommentSerializer(serializers.ModelSerializer):
         slug_field='model',
         queryset=ContentType.objects.all()
     )
-    object_id = serializers.IntegerField()
+    object_id = serializers.CharField(max_length=36)
     related_object = serializers.SerializerMethodField()
     attachments = CommentAttachmentSerializer(many=True, read_only=True)
 

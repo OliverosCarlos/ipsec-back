@@ -2,12 +2,15 @@ from django.db import models
 from django.db.models import JSONField
 
 from core.models import BaseModel
+from inventory.models import ProductVariationInventory
+from invoicing.models.general import ProdServVariationSAT
+from resources.models.services import ServiceDetail
 
 from .general import Brand, Category, Type
 from invoicing.models.sat import ClaveUnidad
 
 
-class Product(BaseModel):
+class ProdServ(BaseModel):
     name = models.CharField(max_length=100)
     short_description = models.CharField(max_length=255, blank=True, default='')
     long_description = models.TextField(blank=True, default='')
@@ -16,6 +19,8 @@ class Product(BaseModel):
         Brand,
         on_delete=models.PROTECT,
         related_name='products',
+        null=True,
+        blank=True,
     )
     category = models.ForeignKey(
         Category,
@@ -34,23 +39,8 @@ class Product(BaseModel):
     partners = models.ManyToManyField(
         'entities.Partner',
         related_name='products',
-        blank=True,
+        blank=True
     )
-    inventory_account = models.ForeignKey(
-        'accounting.Account',
-        on_delete=models.PROTECT,
-        related_name='products',
-        null=True,
-        blank=True,
-    )
-
-    # Preparación para Facturación (CFDI 4.0 - México)
-    sat_product_key = models.CharField(max_length=20, blank=True, help_text="Clave de Producto/Servicio SAT")
-    tax_object = models.CharField(max_length=10, blank=True, help_text="Objeto de impuesto (01, 02, etc.)")
-    
-    # Preparación Contable (Se vinculará después)
-    # income_account = models.ForeignKey('accounting.Account',...)
-    # expense_account = models.ForeignKey('accounting.Account',...)
 
     class Meta:
         ordering = ['name']
@@ -61,10 +51,9 @@ class Product(BaseModel):
         return f'{self.name}'
 
 
-class ProductVariation(BaseModel):
-    product = models.ForeignKey( Product,on_delete=models.CASCADE,related_name='variations', )
-    sku = models.CharField(max_length=100, unique=True, verbose_name='SKU')
-    barcode = models.CharField(max_length=100, blank=True, default='')
+class ProdServVariation(BaseModel):
+    product = models.ForeignKey( ProdServ,on_delete=models.CASCADE,related_name='variations', )
+    
     attributes = JSONField(default=dict, blank=True)
     reference = models.CharField(max_length=100, blank=True, null=True, verbose_name='Reference')
 
@@ -72,25 +61,20 @@ class ProductVariation(BaseModel):
     override_name = models.CharField(max_length=255, blank=True, null=True, help_text="Déjalo en blanco para autogenerar.")
     override_short_description = models.CharField(max_length=500, blank=True, null=True)
 
-    unit_of_measure = models.ForeignKey(
-        ClaveUnidad,
-        on_delete=models.PROTECT,
-        related_name='variations',
-    )
-    quantity = models.DecimalField(max_digits=12, decimal_places=4)
+    quantity = models.DecimalField(max_digits=12, decimal_places=4, null=True, blank=True)
     
     # Precios y Costos Base (Escalable a listas de precios complejas)
     base_price = models.DecimalField(max_digits=12, decimal_places=2, help_text="Precio de venta base")
     standard_cost = models.DecimalField(max_digits=12, decimal_places=2, default=0, help_text="Costo de referencia")
 
     image = models.ImageField(upload_to='resources/variations/', blank=True, null=True)
-
-    # Preparación para Inventario (Gestión de Series/Lotes)
-    # is_serialized = models.BooleanField(default=False)
-    # has_batches = models.BooleanField(default=False)
+    
+    service_detail = models.ForeignKey(ServiceDetail, on_delete=models.PROTECT, related_name='product_service_detail', blank=True, null=True)
+    sat_detail = models.ForeignKey( ProdServVariationSAT,on_delete=models.PROTECT, related_name='product_variation_sat')
+    inventory_detail = models.ForeignKey( ProductVariationInventory,on_delete=models.PROTECT, related_name='product_variation_inventory', blank=True, null=True) 
 
     class Meta:
-        ordering = ['product', 'quantity']
+        ordering = ['product']
         verbose_name = 'Product Variation'
         verbose_name_plural = 'Product Variations'
 
@@ -128,5 +112,5 @@ class PriceList(BaseModel):
 class PriceListItem(BaseModel):
     """Sobrescribe el precio base de un SKU para una lista de precios específica."""
     price_list = models.ForeignKey(PriceList, related_name='items', on_delete=models.CASCADE)
-    variant = models.ForeignKey(ProductVariation, on_delete=models.CASCADE)
+    variant = models.ForeignKey(ProdServVariation, on_delete=models.CASCADE)
     override_price = models.DecimalField(max_digits=12, decimal_places=2)

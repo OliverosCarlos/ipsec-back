@@ -1,13 +1,16 @@
 from .general import Brand, Category, Type, UnitOfMeasure
-from .products import PriceList, PriceListItem, Product, ProductVariation
+from .products import PriceList, PriceListItem, ProdServ, ProdServVariation
+from .services import ServiceCategory, ServiceDetail
 
 __all__ = [
     'Brand',
     'Type',
     'Category',
     'UnitOfMeasure',
-    'Product',
-    'ProductVariation',
+    'ProdServ',
+    'ProdServVariation',
     'PriceList',
     'PriceListItem',
+    'ServiceCategory',
+    'ServiceDetail',
 ]

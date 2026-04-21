@@ -214,7 +214,7 @@ class QuotationLine(BaseModel):
 
     # --- Producto ---
     product_variation = models.ForeignKey(
-        'resources.ProductVariation',
+        'resources.ProdServVariation',
         on_delete=models.PROTECT,
         related_name='quotation_lines',
         help_text='Variación de producto cotizada',

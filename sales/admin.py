@@ -58,5 +58,5 @@ class FastQuotationAdmin(admin.ModelAdmin):
 
 @admin.register(FastQuotationLine)
 class FastQuotationLineAdmin(admin.ModelAdmin):
-    list_display = ['fast_quotation', 'product_variation', 'quantity', 'unit_price', 'discount_percent', 'subtotal']
+    list_display = ['fast_quotation', 'product_service_variation', 'quantity', 'unit_price', 'discount_percent', 'subtotal']
     list_filter = ['fast_quotation__status']

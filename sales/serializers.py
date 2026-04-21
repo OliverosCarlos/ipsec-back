@@ -5,7 +5,7 @@ from entities.serializers import (
     PartnerContactNestedSerializer,
 )
 from invoicing.serializers import ClaveUnidadSerializer
-from resources.serializers import ProductVariationSerializer
+from resources.serializers import ServiceVariationReadSerializer
 
 from .models import Quotation, QuotationLine, FastSalesProposal, FastQuotation, FastQuotationLine
 
@@ -20,14 +20,15 @@ class QuotationLineSerializer(serializers.ModelSerializer):
     tax_amount = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
     total = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
 
-    product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
+    # product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
     unit_of_measure_detail = ClaveUnidadSerializer(source='unit_of_measure', read_only=True)
 
     class Meta:
         model = QuotationLine
         fields = [
             'id', 'quotation', 'sequence',
-            'product_variation', 'product_variation_detail',
+            'product_variation', 
+            # 'product_variation_detail',
             'description',
             'quantity', 'unit_of_measure', 'unit_of_measure_detail',
             'unit_price', 'discount_percent', 'tax_percent',
@@ -180,16 +181,16 @@ class FastQuotationLineSerializer(serializers.ModelSerializer):
     tax_amount = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
     total = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
 
-    product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
-    unit_of_measure_detail = ClaveUnidadSerializer(source='unit_of_measure', read_only=True)
+    product_service_variation_detail = ServiceVariationReadSerializer(source='product_service_variation', read_only=True)
+    clave_unidad_name = serializers.CharField(source='clave_unidad.name', read_only=True, default=None)
 
     class Meta:
         model = FastQuotationLine
         fields = [
             'id', 'fast_quotation', 'sequence',
-            'product_variation', 'product_variation_detail',
+            'product_service_variation', 'product_service_variation_detail',
             'description',
-            'quantity', 'unit_of_measure', 'unit_of_measure_detail',
+            'quantity', 'clave_unidad', 'clave_unidad_name',
             'unit_price', 'discount_percent', 'tax_percent',
             'subtotal', 'discount_amount', 'taxable_amount', 'tax_amount', 'total',
             'is_active', 'created_at', 'updated_at',
@@ -209,8 +210,8 @@ class FastQuotationLineNestedSerializer(serializers.ModelSerializer):
         model = FastQuotationLine
         fields = [
             'id', 'sequence',
-            'product_variation', 'description',
-            'quantity', 'unit_of_measure', 'unit_price',
+            'product_service_variation', 'description',
+            'quantity', 'clave_unidad', 'unit_price',
             'discount_percent', 'tax_percent',
             'subtotal', 'discount_amount', 'taxable_amount', 'tax_amount', 'total',
             'is_active',

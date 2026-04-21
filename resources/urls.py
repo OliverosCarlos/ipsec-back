@@ -9,10 +9,16 @@ from .views import (
     PriceListRetrieveUpdateDestroyView,
     PriceListItemListCreateView,
     PriceListItemRetrieveUpdateDestroyView,
+    ProductBulkUpdateView,
     ProductListCreateView,
+    ResourceItemListView,
     ProductRetrieveUpdateDestroyView,
     ProductVariationListCreateView,
     ProductVariationRetrieveUpdateDestroyView,
+    ServiceListCreateView,
+    ServiceRetrieveUpdateDestroyView,
+    ServiceVariationListCreateView,
+    ServiceVariationRetrieveUpdateDestroyView,
     TypeListCreateView,
     TypeRetrieveUpdateDestroyView,
     UnitOfMeasureListCreateView,
@@ -39,10 +45,20 @@ urlpatterns = [
     # Products
     path('products/', ProductListCreateView.as_view(), name='product-list-create'),
     path('products/<uuid:pk>/', ProductRetrieveUpdateDestroyView.as_view(), name='product-detail'),
+    path('products/<uuid:pk>/bulk-update/', ProductBulkUpdateView.as_view(), name='product-bulk-update'),
 
     # Product Variations
     path('product-variations/', ProductVariationListCreateView.as_view(), name='product-variation-list-create'),
     path('product-variations/<uuid:pk>/', ProductVariationRetrieveUpdateDestroyView.as_view(), name='product-variation-detail'),
+    path('resource-items/', ResourceItemListView.as_view(), name='resource-item-list'),
+
+    # Services
+    path('services/', ServiceListCreateView.as_view(), name='service-list-create'),
+    path('services/<uuid:pk>/', ServiceRetrieveUpdateDestroyView.as_view(), name='service-detail'),
+
+    # Service Variations
+    path('service-variations/', ServiceVariationListCreateView.as_view(), name='service-variation-list-create'),
+    path('service-variations/<uuid:pk>/', ServiceVariationRetrieveUpdateDestroyView.as_view(), name='service-variation-detail'),
 
     # Price Lists
     path('price-lists/', PriceListListCreateView.as_view(), name='price-list-list-create'),
@@ -51,4 +67,6 @@ urlpatterns = [
     # Price List Items
     path('price-list-items/', PriceListItemListCreateView.as_view(), name='price-list-item-list-create'),
     path('price-list-items/<uuid:pk>/', PriceListItemRetrieveUpdateDestroyView.as_view(), name='price-list-item-detail'),
+
+    
 ]

@@ -1,5 +1,24 @@
 from django.db import models
+from .sat import ClaveProdServ, ClaveUnidad, SatCatalog
 
+class ProdServVariationSAT(models.Model):
+	clave_prod_serv = models.ForeignKey(
+		ClaveProdServ, null=True, blank=True, on_delete=models.PROTECT,
+		related_name='variation_sat',
+		help_text="Clave de Producto/Servicio SAT"
+	)
+	clave_unidad = models.ForeignKey(
+		ClaveUnidad, null=True, blank=True, on_delete=models.PROTECT,
+		related_name='variation_sat_unidad',
+		help_text="Clave de Unidad SAT"
+	)
+	unidad = models.CharField(max_length=255, blank=True, help_text="Unidad SAT")
+	objeto_imp = models.ForeignKey(
+		SatCatalog, null=True, blank=True, on_delete=models.PROTECT,
+		related_name='variation_sat_objeto_imp',
+		limit_choices_to={'catalog': 'c_ObjetoImp'},
+		help_text="Objeto de impuesto (01, 02, etc.)"
+	)
 
 class PriceList(models.Model):
 	code = models.CharField(max_length=30, unique=True)
@@ -27,7 +46,7 @@ class PriceListItem(models.Model):
 		related_name='items',
 	)
 	product_variation = models.ForeignKey(
-		'resources.ProductVariation',
+		'resources.ProdServVariation',
 		on_delete=models.CASCADE,
 		related_name='price_list_items',
 	)

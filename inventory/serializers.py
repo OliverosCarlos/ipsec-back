@@ -1,6 +1,6 @@
 from rest_framework import serializers
 
-from resources.serializers import ProductVariationSerializer
+# from resources.serializers import ProductVariationSerializer
 
 from .models import StockAdjustment, StockItem, StockMovement, Warehouse
 
@@ -13,7 +13,7 @@ class WarehouseSerializer(serializers.ModelSerializer):
 
 
 class StockItemSerializer(serializers.ModelSerializer):
-    product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
+    # product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
     warehouse_detail = WarehouseSerializer(source='warehouse', read_only=True)
 
     class Meta:
@@ -23,7 +23,7 @@ class StockItemSerializer(serializers.ModelSerializer):
             'product_variation',
             'product_variation_detail',
             'warehouse',
-            'warehouse_detail',
+            # 'warehouse_detail',
             'on_hand',
             'min_stock',
             'max_stock',
@@ -34,7 +34,7 @@ class StockItemSerializer(serializers.ModelSerializer):
 
 
 class StockMovementSerializer(serializers.ModelSerializer):
-    product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
+    # product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
     warehouse_detail = WarehouseSerializer(source='warehouse', read_only=True)
 
     class Meta:
@@ -42,7 +42,7 @@ class StockMovementSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'product_variation',
-            'product_variation_detail',
+            # 'product_variation_detail',
             'warehouse',
             'warehouse_detail',
             'movement_type',
@@ -55,7 +55,7 @@ class StockMovementSerializer(serializers.ModelSerializer):
 
 
 class StockAdjustmentSerializer(serializers.ModelSerializer):
-    product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
+    # product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
     warehouse_detail = WarehouseSerializer(source='warehouse', read_only=True)
 
     class Meta:
@@ -63,7 +63,7 @@ class StockAdjustmentSerializer(serializers.ModelSerializer):
         fields = [
             'id',
             'product_variation',
-            'product_variation_detail',
+            # 'product_variation_detail',
             'warehouse',
             'warehouse_detail',
             'quantity',
