@@ -71,6 +71,7 @@ INSTALLED_APPS = [
     'accounting',
     'resources',
     'sales',
+    'administration',
 ]
 
 REST_FRAMEWORK = {

@@ -154,12 +154,12 @@ class Quotation(BaseModel):
     )
 
     # --- Notas ---
-    notes = models.TextField(
+    internal_notes = models.TextField(
         blank=True,
         default='',
         help_text='Notas internas',
     )
-    terms_and_conditions = models.TextField(
+    external_notes = models.TextField(
         blank=True,
         default='',
         help_text='Términos y condiciones visibles al cliente',
@@ -213,7 +213,7 @@ class QuotationLine(BaseModel):
     )
 
     # --- Producto ---
-    product_variation = models.ForeignKey(
+    product_service_variation = models.ForeignKey(
         'resources.ProdServVariation',
         on_delete=models.PROTECT,
         related_name='quotation_lines',
@@ -232,7 +232,7 @@ class QuotationLine(BaseModel):
         decimal_places=4,
         validators=[MinValueValidator(Decimal('0.0001'))],
     )
-    unit_of_measure = models.ForeignKey(
+    clave_unidad = models.ForeignKey(
         'invoicing.ClaveUnidad',
         on_delete=models.PROTECT,
         related_name='quotation_lines',

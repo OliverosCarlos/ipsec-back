@@ -21,7 +21,7 @@ class QuotationAdmin(admin.ModelAdmin):
 
 @admin.register(QuotationLine)
 class QuotationLineAdmin(admin.ModelAdmin):
-    list_display = ['quotation', 'product_variation', 'quantity', 'unit_price', 'discount_percent', 'subtotal']
+    list_display = ['quotation', 'product_service_variation', 'quantity', 'unit_price', 'discount_percent', 'subtotal']
     list_filter = ['quotation__status']
 
 

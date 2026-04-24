@@ -1,3 +1,4 @@
+from django.db import transaction
 from rest_framework import serializers
 
 from entities.serializers import (
@@ -19,18 +20,18 @@ class QuotationLineSerializer(serializers.ModelSerializer):
     taxable_amount = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
     tax_amount = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
     total = serializers.DecimalField(max_digits=14, decimal_places=2, read_only=True)
+    clave_unidad_name = serializers.CharField(source='clave_unidad.name', read_only=True, default=None)
 
     # product_variation_detail = ProductVariationSerializer(source='product_variation', read_only=True)
-    unit_of_measure_detail = ClaveUnidadSerializer(source='unit_of_measure', read_only=True)
+    clave_unidad_detail = ClaveUnidadSerializer(source='clave_unidad', read_only=True)
 
     class Meta:
         model = QuotationLine
         fields = [
             'id', 'quotation', 'sequence',
-            'product_variation', 
-            # 'product_variation_detail',
+            'product_service_variation',
             'description',
-            'quantity', 'unit_of_measure', 'unit_of_measure_detail',
+            'quantity', 'clave_unidad', 'clave_unidad_name', 'clave_unidad_detail',
             'unit_price', 'discount_percent', 'tax_percent',
             'subtotal', 'discount_amount', 'taxable_amount', 'tax_amount', 'total',
             'is_active', 'created_at', 'updated_at',
@@ -51,8 +52,8 @@ class QuotationLineNestedSerializer(serializers.ModelSerializer):
         model = QuotationLine
         fields = [
             'id', 'sequence',
-            'product_variation', 'description',
-            'quantity', 'unit_of_measure', 'unit_price',
+            'product_service_variation', 'description',
+            'quantity', 'clave_unidad', 'clave_unidad_detail', 'unit_price',
             'discount_percent', 'tax_percent',
             'subtotal', 'discount_amount', 'taxable_amount', 'tax_amount', 'total',
             'is_active',
@@ -129,7 +130,6 @@ class QuotationReadSerializer(serializers.ModelSerializer):
     lines = QuotationLineSerializer(many=True, read_only=True)
 
     partner_display = serializers.CharField(source='partner.legal_name', read_only=True)
-    partner_rfc = serializers.CharField(source='partner.rfc', read_only=True)
     partner_contact_display = serializers.CharField(source='partner_contact.name', default=None, read_only=True)
     shipping_address_display = serializers.SerializerMethodField()
     currency_display = serializers.CharField(source='currency.description', read_only=True)
@@ -143,7 +143,7 @@ class QuotationReadSerializer(serializers.ModelSerializer):
         model = Quotation
         fields = [
             'id', 'number', 'reference',
-            'partner', 'partner_display', 'partner_rfc',
+            'partner', 'partner_display',
             'partner_contact', 'partner_contact_display',
             'shipping_address', 'shipping_address_display',
             'date', 'validity_date', 'expected_closing_date',
@@ -155,7 +155,7 @@ class QuotationReadSerializer(serializers.ModelSerializer):
             'status', 'status_display',
             'salesperson', 'salesperson_display',
             'amount_subtotal', 'amount_discount', 'amount_tax', 'amount_total',
-            'notes', 'terms_and_conditions',
+            'internal_notes', 'external_notes',
             'lines',
             'is_active', 'created_at', 'updated_at',
         ]
@@ -329,16 +329,59 @@ class FastQuotationNestedReadSerializer(serializers.ModelSerializer):
 
 # ── FastSalesProposal ──────────────────────────────────────────
 
+class FastQuotationProposalNestedSerializer(serializers.ModelSerializer):
+    id = serializers.UUIDField(required=False)
+    lines = FastQuotationLineNestedSerializer(many=True, required=False)
+
+    class Meta:
+        model = FastQuotation
+        fields = [
+            'id', 'name', 'description',
+            'date', 'validity_date',
+            'currency', 'status', 'salesperson',
+            'internal_notes', 'external_notes',
+            'lines',
+            'is_active',
+        ]
+
 class FastSalesProposalSerializer(serializers.ModelSerializer):
+    quotations = FastQuotationProposalNestedSerializer(many=True, required=False)
+
     class Meta:
         model = FastSalesProposal
         fields = [
             'id', 'name', 'objective', 'description',
             'partner', 'partner_contact',
             'status', 'salesperson',
+            'quotations',
             'is_active', 'created_at', 'updated_at',
         ]
         read_only_fields = ['id', 'created_at', 'updated_at']
+
+    @transaction.atomic
+    def create(self, validated_data):
+        quotations_data = validated_data.pop('quotations', [])
+        proposal = FastSalesProposal.objects.create(**validated_data)
+
+        for quotation_data in quotations_data:
+            lines_data = quotation_data.pop('lines', [])
+            quotation_data.pop('id', None)
+
+            quotation = FastQuotation.objects.create(
+                proposal=proposal,
+                **quotation_data,
+            )
+
+            for line_data in lines_data:
+                line_data.pop('id', None)
+                FastQuotationLine.objects.create(
+                    fast_quotation=quotation,
+                    **line_data,
+                )
+
+            quotation.compute_totals()
+
+        return proposal
 
 
 class FastSalesProposalReadSerializer(serializers.ModelSerializer):
