@@ -29,6 +29,7 @@ from .serializers import (
     ProdServReadSerializer,
     ProdServWriteSerializer,
     ProductBulkUpdateSerializer,
+    ServiceBulkUpdateSerializer,
     ServiceVariationSerializer,
     ServiceVariationReadSerializer,
     ServiceReadSerializer,
@@ -175,10 +176,10 @@ class ProductBulkUpdateView(APIView):
 
         result = {'product_updated': False, 'partners_updated': False, 'variations': {}}
 
-        def resolve_sat_catalog(catalog, code):
-            if not code:
+        def resolve_sat_catalog(catalog, pk):
+            if not pk:
                 return None
-            return SatCatalog.objects.filter(catalog=catalog, code=code).first()
+            return SatCatalog.objects.filter(catalog=catalog, pk=pk).first()
 
         def create_sat_detail(sat_fields):
             clave_unidad_code = sat_fields.pop('clave_unidad', '')
@@ -388,6 +389,150 @@ class ServiceRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
         return ServiceWriteSerializer
 
 
+# ── Service Bulk Update ───────────────────────────────────────────────────────
+
+class ServiceBulkUpdateView(APIView):
+    """
+    Actualización integral de un Service (ProdServ) y sus variaciones.
+    Cada variación envía un campo 'action': created, updated o deleted.
+
+    PUT /services/<pk>/bulk-update/
+    {
+        "name": "Nuevo nombre",
+        "clave_prod_serv": "01010101",
+        "objeto_imp": "02",
+        "variations": [
+            {"action": "created", "base_price": "100.00", "service_detail": {...}, ...},
+            {"action": "updated", "id": "<uuid>", "base_price": "120.00", ...},
+            {"action": "deleted", "id": "<uuid>"}
+        ]
+    }
+    """
+
+    def put(self, request, pk):
+        from django.db import transaction
+        from invoicing.models.general import ProdServVariationSAT
+        from invoicing.models.sat import ClaveUnidad, SatCatalog
+        from .models import ServiceDetail
+
+        try:
+            service = ProdServ.objects.get(pk=pk)
+        except ProdServ.DoesNotExist:
+            return Response({'detail': 'Service not found.'}, status=status.HTTP_404_NOT_FOUND)
+
+        serializer = ServiceBulkUpdateSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        data = serializer.validated_data
+
+        variations_data = data.pop('variations', None)
+        clave_prod_serv = data.pop('clave_prod_serv', '')
+        objeto_imp = data.pop('objeto_imp', '')
+        service_fields = data
+
+        result = {'service_updated': False, 'variations': {}}
+
+        def resolve_sat_catalog(catalog, pk):
+            if not pk:
+                return None
+            return SatCatalog.objects.filter(catalog=catalog, pk=pk).first()
+
+        def create_sat_detail(sat_fields):
+            clave_unidad_code = sat_fields.pop('clave_unidad', '')
+            return ProdServVariationSAT.objects.create(
+                clave_prod_serv_id=clave_prod_serv or None,
+                objeto_imp=resolve_sat_catalog('c_ObjetoImp', objeto_imp),
+                clave_unidad_id=clave_unidad_code or None,
+                **sat_fields,
+            )
+
+        def create_service_detail(detail_fields):
+            return ServiceDetail.objects.create(**detail_fields)
+
+        def extract_sat_fields(item):
+            return {
+                'clave_unidad': item.pop('clave_unidad', ''),
+                'unidad': item.pop('unidad', ''),
+            }
+
+        def extract_service_detail_fields(item):
+            detail = item.pop('service_detail', {}) or {}
+            return {
+                'billing_type': detail.get('billing_type', 'fixed'),
+                'recurrence_every': detail.get('recurrence_every', 1),
+                'recurrence_period': detail.get('recurrence_period', 'month'),
+            }
+
+        with transaction.atomic():
+            # ── Update Service fields ──
+            if service_fields:
+                for attr, value in service_fields.items():
+                    setattr(service, attr, value)
+                service.save()
+                result['service_updated'] = True
+
+            # ── Process variations ──
+            if variations_data is not None:
+                created = []
+                updated = []
+                deleted = []
+
+                for item in variations_data:
+                    action = item.pop('action')
+                    item_id = item.pop('id', None)
+                    sat_fields = extract_sat_fields(item)
+                    detail_fields = extract_service_detail_fields(item)
+
+                    if action == 'created':
+                        sat_detail = create_sat_detail(sat_fields)
+                        service_detail = create_service_detail(detail_fields)
+                        obj = ProdServVariation.objects.create(
+                            product=service,
+                            sat_detail=sat_detail,
+                            service_detail=service_detail,
+                            **item,
+                        )
+                        created.append(str(obj.id))
+
+                    elif action == 'updated':
+                        try:
+                            variation = ProdServVariation.objects.get(id=item_id, product=service)
+                        except ProdServVariation.DoesNotExist:
+                            continue
+
+                        # Update SAT detail
+                        if variation.sat_detail:
+                            clave_unidad_code = sat_fields.pop('clave_unidad', '')
+                            update_kwargs = {'unidad': sat_fields.get('unidad', '')}
+                            update_kwargs['clave_prod_serv_id'] = clave_prod_serv or variation.sat_detail.clave_prod_serv_id
+                            objeto_imp_instance = resolve_sat_catalog('c_ObjetoImp', objeto_imp)
+                            update_kwargs['objeto_imp'] = objeto_imp_instance if objeto_imp_instance else variation.sat_detail.objeto_imp
+                            clave_unidad_instance = ClaveUnidad.objects.filter(clave=clave_unidad_code).first()
+                            update_kwargs['clave_unidad'] = clave_unidad_instance if clave_unidad_instance else variation.sat_detail.clave_unidad
+                            ProdServVariationSAT.objects.filter(id=variation.sat_detail_id).update(**update_kwargs)
+                        else:
+                            variation.sat_detail = create_sat_detail(sat_fields)
+
+                        # Update or create ServiceDetail
+                        if variation.service_detail:
+                            ServiceDetail.objects.filter(id=variation.service_detail_id).update(**detail_fields)
+                        else:
+                            variation.service_detail = create_service_detail(detail_fields)
+
+                        # Update variation fields
+                        for attr, value in item.items():
+                            setattr(variation, attr, value)
+                        variation.save()
+                        updated.append(str(item_id))
+
+                    elif action == 'deleted':
+                        ProdServVariation.objects.filter(id=item_id, product=service).delete()
+                        deleted.append(str(item_id))
+
+                result['variations'] = {'created': created, 'updated': updated, 'deleted': deleted}
+
+        return Response(result, status=status.HTTP_200_OK)
+
+
 # ── Service Variation ─────────────────────────────────────────────────────────
 
 class ServiceVariationListCreateView(generics.ListCreateAPIView):
@@ -449,3 +594,47 @@ class PriceListItemListCreateView(generics.ListCreateAPIView):
 class PriceListItemRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
     queryset = PriceListItem.objects.select_related('price_list', 'variant')
     serializer_class = PriceListItemSerializer
+
+
+# ── Product Dashboard ─────────────────────────────────────────────────────────
+
+class ProductDashboardView(APIView):
+    """Aggregated metrics for ProdServ / ProdServVariation dashboard."""
+
+    def get(self, request, *args, **kwargs):
+        total_products = ProdServ.objects.count()
+
+        type_counts_qs = (
+            ProdServ.objects
+            .values('product_type__name')
+            .annotate(count=models.Count('id'))
+        )
+        type_counts_map = {
+            (row['product_type__name'] or '').lower(): row['count']
+            for row in type_counts_qs
+        }
+        services_count = type_counts_map.get('servicio', 0)
+        inventory_count = type_counts_map.get('inventario', 0)
+
+        by_category_qs = (
+            ProdServ.objects
+            .values('category__name')
+            .annotate(count=models.Count('id'))
+            .order_by('category__name')
+        )
+        by_category = [
+            {
+                'name': row['category__name'] or 'Sin categoría',
+                'count': row['count'],
+            }
+            for row in by_category_qs
+        ]
+
+        return Response({
+            'total_products': total_products,
+            'by_product_type': {
+                'servicio': services_count,
+                'inventario': inventory_count,
+            },
+            'by_category': by_category,
+        }, status=status.HTTP_200_OK)

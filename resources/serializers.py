@@ -312,10 +312,10 @@ class ProdServWriteSerializer(serializers.ModelSerializer):
             'description': variation_data.pop('inventory_description', ''),
         }
 
-    def _resolve_sat_catalog(self, catalog, code):
-        if not code:
+    def _resolve_sat_catalog(self, catalog, pk):
+        if not pk:
             return None
-        return SatCatalog.objects.filter(catalog=catalog, code=code).first()
+        return SatCatalog.objects.filter(catalog=catalog, pk=pk).first()
 
     def _create_sat_detail(self, clave_prod_serv, objeto_imp, sat_fields):
         clave_unidad_code = sat_fields.pop('clave_unidad', '')
@@ -629,10 +629,10 @@ class ServiceWriteSerializer(serializers.ModelSerializer):
             'recurrence_period': detail.get('recurrence_period', 'month'),
         }
 
-    def _resolve_sat_catalog(self, catalog, code):
-        if not code:
+    def _resolve_sat_catalog(self, catalog, pk):
+        if not pk:
             return None
-        return SatCatalog.objects.filter(catalog=catalog, code=code).first()
+        return SatCatalog.objects.filter(catalog=catalog, pk=pk).first()
 
     def _create_sat_detail(self, clave_prod_serv, objeto_imp, sat_fields):
         clave_unidad_code = sat_fields.pop('clave_unidad', '')
@@ -803,6 +803,49 @@ class ProductBulkUpdateSerializer(serializers.Serializer):
 
     # Nested variations with action flags
     variations = ProdServVariationBulkItemSerializer(many=True, required=False)
+
+
+# ── Service Bulk Update ───────────────────────────────────────────────────────
+
+class ServiceVariationBulkItemSerializer(_BulkItemMixin):
+    attributes = serializers.JSONField(required=False, default=dict)
+    reference = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    override_name = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    override_short_description = serializers.CharField(required=False, allow_blank=True, allow_null=True)
+    base_price = serializers.DecimalField(max_digits=12, decimal_places=2, required=False)
+    standard_cost = serializers.DecimalField(max_digits=12, decimal_places=2, required=False, default=0)
+    image = serializers.ImageField(required=False, allow_null=True)
+    is_active = serializers.BooleanField(required=False, default=True)
+
+    # SAT per-variation
+    clave_unidad = serializers.CharField(max_length=20, required=False, default='')
+    unidad = serializers.CharField(max_length=255, required=False, default='')
+
+    # ServiceDetail per-variation (nested dict)
+    service_detail = ServiceDetailWriteSerializer(required=False, default={})
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if attrs['action'] == 'created' and attrs.get('base_price') is None:
+            raise serializers.ValidationError({'base_price': 'Required for action "created".'})
+        return attrs
+
+
+class ServiceBulkUpdateSerializer(serializers.Serializer):
+    # ProdServ (Service) fields (all optional)
+    name = serializers.CharField(required=False)
+    short_description = serializers.CharField(required=False, allow_blank=True)
+    long_description = serializers.CharField(required=False, allow_blank=True)
+    category = serializers.PrimaryKeyRelatedField(queryset=Category.objects.all(), required=False, allow_null=True)
+    product_type = serializers.PrimaryKeyRelatedField(queryset=Type.objects.all(), required=False, allow_null=True)
+    is_active = serializers.BooleanField(required=False)
+
+    # SAT fields at product level
+    clave_prod_serv = serializers.CharField(max_length=20, required=False, default='')
+    objeto_imp = serializers.CharField(max_length=10, required=False, default='')
+
+    # Nested variations with action flags
+    variations = ServiceVariationBulkItemSerializer(many=True, required=False)
 
 
 # ── Unified Resource Item ─────────────────────────────────────────────────────

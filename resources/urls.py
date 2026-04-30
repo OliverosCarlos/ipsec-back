@@ -10,11 +10,13 @@ from .views import (
     PriceListItemListCreateView,
     PriceListItemRetrieveUpdateDestroyView,
     ProductBulkUpdateView,
+    ProductDashboardView,
     ProductListCreateView,
     ResourceItemListView,
     ProductRetrieveUpdateDestroyView,
     ProductVariationListCreateView,
     ProductVariationRetrieveUpdateDestroyView,
+    ServiceBulkUpdateView,
     ServiceListCreateView,
     ServiceRetrieveUpdateDestroyView,
     ServiceVariationListCreateView,
@@ -43,6 +45,7 @@ urlpatterns = [
     path('units-of-measure/<int:pk>/', UnitOfMeasureRetrieveUpdateDestroyView.as_view(), name='unit-of-measure-detail'),
 
     # Products
+    path('products/dashboard/', ProductDashboardView.as_view(), name='product-dashboard'),
     path('products/', ProductListCreateView.as_view(), name='product-list-create'),
     path('products/<uuid:pk>/', ProductRetrieveUpdateDestroyView.as_view(), name='product-detail'),
     path('products/<uuid:pk>/bulk-update/', ProductBulkUpdateView.as_view(), name='product-bulk-update'),
@@ -55,6 +58,7 @@ urlpatterns = [
     # Services
     path('services/', ServiceListCreateView.as_view(), name='service-list-create'),
     path('services/<uuid:pk>/', ServiceRetrieveUpdateDestroyView.as_view(), name='service-detail'),
+    path('services/<uuid:pk>/bulk-update/', ServiceBulkUpdateView.as_view(), name='service-bulk-update'),
 
     # Service Variations
     path('service-variations/', ServiceVariationListCreateView.as_view(), name='service-variation-list-create'),

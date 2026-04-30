@@ -14,9 +14,11 @@ from .views import (
     FastSalesProposalListCreateView,
     FastSalesProposalPDFsView,
     FastSalesProposalRetrieveUpdateDestroyView,
+    SalesDashboardView,
 )
 
 urlpatterns = [
+    path('dashboard/', SalesDashboardView.as_view(), name='sales-dashboard'),
     path('quotations/', QuotationListCreateView.as_view(), name='quotation-list-create'),
     path('quotations/<uuid:pk>/', QuotationRetrieveUpdateDestroyView.as_view(), name='quotation-detail'),
     path('quotation-lines/', QuotationLineListCreateView.as_view(), name='quotation-line-list-create'),

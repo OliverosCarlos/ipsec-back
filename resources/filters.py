@@ -17,10 +17,10 @@ class ProductFilter(django_filters.FilterSet):
     short_description = django_filters.CharFilter(lookup_expr='icontains')
     long_description = django_filters.CharFilter(lookup_expr='icontains')
     product_type = django_filters.CharFilter(
-        field_name='product_type__name', lookup_expr='icontains'
+        field_name='product_type__name', lookup_expr='exact'
     )
-    brand = django_filters.NumberFilter()
-    category = django_filters.NumberFilter()
+    brand = django_filters.CharFilter(field_name='brand__name', lookup_expr='icontains')
+    category = django_filters.CharFilter(field_name='category__name', lookup_expr='icontains')
     is_active = django_filters.BooleanFilter()
 
     class Meta:
@@ -33,12 +33,13 @@ class ServiceFilter(django_filters.FilterSet):
     short_description = django_filters.CharFilter(lookup_expr='icontains')
     long_description = django_filters.CharFilter(lookup_expr='icontains')
     product_type = django_filters.CharFilter(
-        field_name='product_type__name', lookup_expr='icontains'
+        field_name='product_type__name', lookup_expr='exact'
     )
+    category = django_filters.CharFilter(field_name='category__name', lookup_expr='icontains')
 
     class Meta:
         model = ProdServ
-        fields = ['name', 'short_description', 'long_description', 'product_type']
+        fields = ['name', 'short_description', 'long_description', 'category']
 
 
 class ResourceItemFilter(django_filters.FilterSet):

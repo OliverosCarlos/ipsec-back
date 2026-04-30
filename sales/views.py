@@ -1,8 +1,12 @@
 from io import BytesIO
 import os
 import zipfile
+from datetime import timedelta
+from decimal import Decimal
 
 from django.conf import settings as django_settings
+from django.db.models import Count, Sum
+from django.db.models.functions import TruncMonth
 from django.http import HttpResponse
 from django.template.loader import render_to_string
 from django.utils import timezone
@@ -336,3 +340,142 @@ class FastSalesProposalPDFsView(APIView):
             f'attachment; filename="Propuesta-{proposal_name}.zip"'
         )
         return response
+
+
+# ── Sales Dashboard ───────────────────────────────────────────
+
+class SalesDashboardView(APIView):
+    """
+    GET /sales/dashboard/
+
+    Devuelve métricas agregadas de Quotation, FastSalesProposal y FastQuotation
+    para alimentar un dashboard de ventas.
+    """
+
+    def _counts_by_status(self, qs, choices):
+        """Devuelve un dict {status_value: count} con todos los choices presentes."""
+        raw = dict(qs.values_list('status').annotate(c=Count('id')))
+        return {value: raw.get(value, 0) for value, _ in choices}
+
+    def _monthly_amounts(self, qs, months=12):
+        """Devuelve lista de {month: 'YYYY-MM', count, amount_total} de los últimos N meses."""
+        today = timezone.now().date()
+        start = (today.replace(day=1) - timedelta(days=31 * (months - 1))).replace(day=1)
+        rows = (
+            qs.filter(date__gte=start)
+            .annotate(month=TruncMonth('date'))
+            .values('month')
+            .annotate(count=Count('id'), amount_total=Sum('amount_total'))
+            .order_by('month')
+        )
+        return [
+            {
+                'month': row['month'].strftime('%Y-%m'),
+                'count': row['count'],
+                'amount_total': str(row['amount_total'] or Decimal('0.00')),
+            }
+            for row in rows
+        ]
+
+    def get(self, request, *args, **kwargs):
+        today = timezone.now().date()
+        last_30 = today - timedelta(days=30)
+
+        # ── Quotations ──
+        quotations = Quotation.objects.all()
+        quotations_active = quotations.filter(is_active=True)
+        quotation_status = self._counts_by_status(quotations_active, Quotation.Status.choices)
+        quotation_totals = quotations_active.aggregate(
+            total_amount=Sum('amount_total'),
+            total_subtotal=Sum('amount_subtotal'),
+            total_tax=Sum('amount_tax'),
+            total_discount=Sum('amount_discount'),
+        )
+        quotation_recent = quotations_active.filter(date__gte=last_30).aggregate(
+            count=Count('id'),
+            amount_total=Sum('amount_total'),
+        )
+        quotation_confirmed_amount = quotations_active.filter(
+            status=Quotation.Status.CONFIRMED,
+        ).aggregate(amount=Sum('amount_total'))['amount'] or Decimal('0.00')
+
+        # ── FastSalesProposals ──
+        proposals = FastSalesProposal.objects.all()
+        proposals_active = proposals.filter(is_active=True)
+        proposal_status = self._counts_by_status(proposals_active, FastSalesProposal.Status.choices)
+        proposal_totals = proposals_active.aggregate(
+            quotations_count=Count('quotations'),
+            total_amount=Sum('quotations__amount_total'),
+        )
+
+        # ── FastQuotations ──
+        fast_quotations = FastQuotation.objects.all()
+        fast_quotations_active = fast_quotations.filter(is_active=True)
+        fast_quotation_status = self._counts_by_status(
+            fast_quotations_active, FastQuotation.Status.choices,
+        )
+        fast_quotation_totals = fast_quotations_active.aggregate(
+            total_amount=Sum('amount_total'),
+            total_subtotal=Sum('amount_subtotal'),
+            total_tax=Sum('amount_tax'),
+            total_discount=Sum('amount_discount'),
+        )
+        fast_quotation_recent = fast_quotations_active.filter(date__gte=last_30).aggregate(
+            count=Count('id'),
+            amount_total=Sum('amount_total'),
+        )
+        fast_quotation_confirmed_amount = fast_quotations_active.filter(
+            status=FastQuotation.Status.CONFIRMED,
+        ).aggregate(amount=Sum('amount_total'))['amount'] or Decimal('0.00')
+
+        # ── FastQuotations sin propuesta ──
+        fast_quotations_without_proposal = fast_quotations_active.filter(proposal__isnull=True).count()
+
+        def _money(value):
+            return str(value or Decimal('0.00'))
+
+        data = {
+            'generated_at': timezone.now().isoformat(),
+            'quotations': {
+                'total': quotations_active.count(),
+                'by_status': quotation_status,
+                'totals': {
+                    'amount_total': _money(quotation_totals['total_amount']),
+                    'amount_subtotal': _money(quotation_totals['total_subtotal']),
+                    'amount_tax': _money(quotation_totals['total_tax']),
+                    'amount_discount': _money(quotation_totals['total_discount']),
+                    'confirmed_amount': _money(quotation_confirmed_amount),
+                },
+                'last_30_days': {
+                    'count': quotation_recent['count'],
+                    'amount_total': _money(quotation_recent['amount_total']),
+                },
+                'monthly': self._monthly_amounts(quotations_active),
+            },
+            'fast_sales_proposals': {
+                'total': proposals_active.count(),
+                'by_status': proposal_status,
+                'totals': {
+                    'quotations_count': proposal_totals['quotations_count'] or 0,
+                    'amount_total': _money(proposal_totals['total_amount']),
+                },
+            },
+            'fast_quotations': {
+                'total': fast_quotations_active.count(),
+                'without_proposal': fast_quotations_without_proposal,
+                'by_status': fast_quotation_status,
+                'totals': {
+                    'amount_total': _money(fast_quotation_totals['total_amount']),
+                    'amount_subtotal': _money(fast_quotation_totals['total_subtotal']),
+                    'amount_tax': _money(fast_quotation_totals['total_tax']),
+                    'amount_discount': _money(fast_quotation_totals['total_discount']),
+                    'confirmed_amount': _money(fast_quotation_confirmed_amount),
+                },
+                'last_30_days': {
+                    'count': fast_quotation_recent['count'],
+                    'amount_total': _money(fast_quotation_recent['amount_total']),
+                },
+                'monthly': self._monthly_amounts(fast_quotations_active),
+            },
+        }
+        return Response(data, status=status.HTTP_200_OK)
