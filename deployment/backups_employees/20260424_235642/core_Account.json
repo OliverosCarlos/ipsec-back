@@ -1,0 +1,74 @@
+[
+{
+  "model": "core.account",
+  "pk": 1,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$NBnzbVi1TKVyvKVw80PSwq$FAyB7zb3BjGuuoL5Snm/dA5zavpoUSMoT4vsssGT0gw=",
+    "last_login": null,
+    "is_superuser": true,
+    "username": "admin",
+    "first_name": "",
+    "last_name": "",
+    "email": "admin@ipsec.mx",
+    "is_staff": true,
+    "is_active": true,
+    "date_joined": "2026-03-18T18:18:05.430Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "core.account",
+  "pk": 4,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$VBCCGDG7n0AKpLdxKNwOwz$WwtZvY0E7i60RvejxR44Njzvhhe/6/bfEMiEcw/3j9Y=",
+    "last_login": "2026-04-17T21:22:34.626Z",
+    "is_superuser": false,
+    "username": "carlos.oliveros",
+    "first_name": "Carlos",
+    "last_name": "R",
+    "email": "carlos.oliveros@ipsec.mx",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-03-27T18:10:30.877Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "core.account",
+  "pk": 5,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$aRv1bxZpUeA3TZH3KDeNZa$CSF6LXQpLQw7CpLMyEM+KACsSl2Y44PqoW2WJU50zEc=",
+    "last_login": "2026-03-31T16:58:41.737Z",
+    "is_superuser": false,
+    "username": "roberto.enriquez",
+    "first_name": "Roberto",
+    "last_name": "Enriquez",
+    "email": "renriquez@ipsec.mx",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-03-27T18:17:46.007Z",
+    "groups": [],
+    "user_permissions": []
+  }
+},
+{
+  "model": "core.account",
+  "pk": 6,
+  "fields": {
+    "password": "pbkdf2_sha256$1200000$bsr6rU2FTLAaih8H0yF8pq$G5JUjZ2rN34+PHIUxMnRk8KacLlOwH+c3J0rkOqRNoU=",
+    "last_login": "2026-03-31T16:39:19.646Z",
+    "is_superuser": false,
+    "username": "araceli.salazar",
+    "first_name": "Araceli",
+    "last_name": "Salazar",
+    "email": "araceli.salazar@ipsec.mx",
+    "is_staff": false,
+    "is_active": true,
+    "date_joined": "2026-03-30T16:40:35.358Z",
+    "groups": [],
+    "user_permissions": []
+  }
+}
+]

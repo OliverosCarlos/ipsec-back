@@ -1,0 +1,2395 @@
+[
+  {
+    "model": "core.entitymodel",
+    "pk": 1,
+    "fields": {
+      "code": "default",
+      "name": "Default",
+      "plural_name": "Defaults",
+      "model": "",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "dashboard",
+          "route": "dashboard",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 2,
+    "fields": {
+      "code": "empleado",
+      "name": "Empleado",
+      "plural_name": "Empleados",
+      "model": "",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "nombre",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "numero_empleado",
+          "label": "Número de Empleado",
+          "type": "number",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "nombre_adscripcion",
+          "label": "Nombre de Adscripción",
+          "type": "text",
+          "options": [],
+          "order": 2
+        },
+        {
+          "key": "nombre_categoria",
+          "label": "Nombre de categoría",
+          "type": "text",
+          "options": [],
+          "order": 3
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 3,
+    "fields": {
+      "code": "usuario",
+      "name": "Usuario",
+      "plural_name": "Usuarios",
+      "model": "",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "username",
+          "label": "Usuario",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "email",
+          "label": "Email",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "first_name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 2
+        },
+        {
+          "key": "last_name",
+          "label": "Apellido",
+          "type": "text",
+          "options": [],
+          "order": 3
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 4,
+    "fields": {
+      "code": "stage",
+      "name": "Etapa",
+      "plural_name": "Etapas",
+      "model": "",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "name",
+          "label": "Nombre de Etapa",
+          "type": "text",
+          "options": [],
+          "order": 0
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 5,
+    "fields": {
+      "code": "brand",
+      "name": "Marca",
+      "plural_name": "Marcas",
+      "model": "brand",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 6,
+    "fields": {
+      "code": "type",
+      "name": "Tipo de Producto",
+      "plural_name": "Tipos de Producto",
+      "model": "type",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 7,
+    "fields": {
+      "code": "category",
+      "name": "Categoría de Producto",
+      "plural_name": "Categorías de Producto",
+      "model": "category",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 8,
+    "fields": {
+      "code": "unit_of_measure",
+      "name": "Unidad de Medida",
+      "plural_name": "Unidades de Medida",
+      "model": "unit_of_measure",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "abbreviation",
+          "label": "Abreviatura",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 9,
+    "fields": {
+      "code": "product",
+      "name": "Producto",
+      "plural_name": "Productos",
+      "model": "product",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": true,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "short_description",
+          "label": "Descripción Corta",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "long_description",
+          "label": "Descripción Larga",
+          "type": "text",
+          "options": [],
+          "order": 2
+        },
+        {
+          "key": "brand",
+          "label": "Marca",
+          "type": "text",
+          "options": [],
+          "order": 3
+        },
+        {
+          "key": "category",
+          "label": "Categoría",
+          "type": "text",
+          "options": [],
+          "order": 4
+        },
+        {
+          "key": "partner",
+          "label": "Socio Comercial",
+          "type": "text",
+          "options": [],
+          "order": 5
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 10,
+    "fields": {
+      "code": "product_variation",
+      "name": "Variación de Producto",
+      "plural_name": "Variaciones de Producto",
+      "model": "product_variation",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": true,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "description",
+          "label": "Descripción",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 11,
+    "fields": {
+      "code": "person_title",
+      "name": "Título de Persona",
+      "plural_name": "Títulos de Persona",
+      "model": "person_title",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "abbreviation",
+          "label": "Abreviatura",
+          "type": "text",
+          "options": [],
+          "order": 2
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 12,
+    "fields": {
+      "code": "department",
+      "name": "Departamento",
+      "plural_name": "Departamentos",
+      "model": "department",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "description",
+          "label": "Descripción",
+          "type": "text",
+          "options": [],
+          "order": 2
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 13,
+    "fields": {
+      "code": "company_sector",
+      "name": "Sector Empresarial",
+      "plural_name": "Sectores Empresariales",
+      "model": "company_sector",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "description",
+          "label": "Descripción",
+          "type": "text",
+          "options": [],
+          "order": 2
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 14,
+    "fields": {
+      "code": "employee",
+      "name": "Empleado",
+      "plural_name": "Empleados",
+      "model": "employee",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "first_name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "last_name_father",
+          "label": "Apellido Paterno",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "last_name_mother",
+          "label": "Apellido Materno",
+          "type": "text",
+          "options": [],
+          "order": 2
+        },
+        {
+          "key": "email",
+          "label": "Email",
+          "type": "text",
+          "options": [],
+          "order": 3
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 15,
+    "fields": {
+      "code": "company",
+      "name": "Empresa",
+      "plural_name": "Empresas",
+      "model": "company",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": true,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "trade_name",
+          "label": "Nombre Comercial",
+          "type": "text",
+          "options": [],
+          "order": 2
+        },
+        {
+          "key": "tax_id",
+          "label": "RFC / Tax ID",
+          "type": "text",
+          "options": [],
+          "order": 3
+        },
+        {
+          "key": "email",
+          "label": "Email",
+          "type": "text",
+          "options": [],
+          "order": 4
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 16,
+    "fields": {
+      "code": "company_address",
+      "name": "Dirección de Empresa",
+      "plural_name": "Direcciones de Empresa",
+      "model": "company_address",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "kind",
+          "label": "Tipo",
+          "type": "select",
+          "options": [
+            {
+              "label": "Fiscal",
+              "value": "FISCAL"
+            },
+            {
+              "label": "Sucursal",
+              "value": "BRANCH"
+            },
+            {
+              "label": "Envío",
+              "value": "SHIPPING"
+            },
+            {
+              "label": "Otro",
+              "value": "OTHER"
+            }
+          ],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "city",
+          "label": "Ciudad",
+          "type": "text",
+          "options": [],
+          "order": 2
+        },
+        {
+          "key": "state",
+          "label": "Estado",
+          "type": "text",
+          "options": [],
+          "order": 3
+        },
+        {
+          "key": "zip_code",
+          "label": "Código Postal",
+          "type": "text",
+          "options": [],
+          "order": 4
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 17,
+    "fields": {
+      "code": "company_contact",
+      "name": "Contacto de Empresa",
+      "plural_name": "Contactos de Empresa",
+      "model": "company_contact",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "email",
+          "label": "Email",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "phone",
+          "label": "Teléfono",
+          "type": "text",
+          "options": [],
+          "order": 2
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 18,
+    "fields": {
+      "code": "company_bank_account",
+      "name": "Cuenta Bancaria de Empresa",
+      "plural_name": "Cuentas Bancarias de Empresa",
+      "model": "company_bank_account",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "account_holder",
+          "label": "Titular",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "clabe",
+          "label": "CLABE",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "account_number",
+          "label": "No. de Cuenta",
+          "type": "text",
+          "options": [],
+          "order": 2
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 19,
+    "fields": {
+      "code": "partner",
+      "name": "Partner",
+      "plural_name": "Partners",
+      "model": "partner",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": true,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "commercial_name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "role",
+          "label": "Rol",
+          "type": "select",
+          "options": [
+            {
+              "label": "Cliente",
+              "value": "CUSTOMER"
+            },
+            {
+              "label": "Proveedor",
+              "value": "SUPPLIER"
+            },
+            {
+              "label": "Transportista",
+              "value": "CARRIER"
+            },
+            {
+              "label": "Otro",
+              "value": "OTHER"
+            }
+          ],
+          "order": 1
+        },
+        {
+          "key": "sector",
+          "label": "Sector",
+          "type": "select",
+          "options": [
+            {
+              "label": "Privado",
+              "value": "PRIVATE"
+            },
+            {
+              "label": "Público",
+              "value": "PUBLIC"
+            }
+          ],
+          "order": 2
+        },
+        {
+          "key": "company_sector",
+          "label": "Sector Comercial",
+          "type": "text",
+          "options": [],
+          "order": 3
+        },
+        {
+          "key": "person_type",
+          "label": "Tipo de Persona",
+          "type": "select",
+          "options": [
+            {
+              "label": "Persona Moral",
+              "value": "MORAL"
+            },
+            {
+              "label": "Persona Física",
+              "value": "FISICA"
+            }
+          ],
+          "order": 4
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 20,
+    "fields": {
+      "code": "sat_catalog",
+      "name": "Catálogo SAT",
+      "plural_name": "Catálogos SAT",
+      "model": "sat_catalog",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "catalog",
+          "label": "Catálogo",
+          "type": "select",
+          "options": [
+            {
+              "label": "Regimen Fiscal",
+              "value": "c_RegimenFiscal"
+            },
+            {
+              "label": "DIOT Tipo Tercero",
+              "value": "DIOT_TipoTercero"
+            },
+            {
+              "label": "DIOT Tipo Operación",
+              "value": "DIOT_TipoOperacion"
+            },
+            {
+              "label": "Moneda",
+              "value": "c_Moneda"
+            },
+            {
+              "label": "Forma de Pago",
+              "value": "c_FormaPago"
+            },
+            {
+              "label": "Método de Pago",
+              "value": "c_MetodoPago"
+            },
+            {
+              "label": "Periodicidad",
+              "value": "c_Periodicidad"
+            }
+          ],
+          "order": 1
+        },
+        {
+          "key": "description",
+          "label": "Descripción",
+          "type": "text",
+          "options": [],
+          "order": 2
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 21,
+    "fields": {
+      "code": "bank",
+      "name": "Banco",
+      "plural_name": "Bancos",
+      "model": "bank",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "short_name",
+          "label": "Nombre Corto",
+          "type": "text",
+          "options": [],
+          "order": 2
+        },
+        {
+          "key": "legal_name",
+          "label": "Razón Social",
+          "type": "text",
+          "options": [],
+          "order": 3
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 22,
+    "fields": {
+      "code": "job_position",
+      "name": "Puesto de Trabajo",
+      "plural_name": "Puestos de Trabajo",
+      "model": "job_position",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 23,
+    "fields": {
+      "code": "partner_contact",
+      "name": "Contacto de Partner",
+      "plural_name": "Contactos de Partner",
+      "model": "partner_contact",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": true,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "email",
+          "label": "Email",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "phone",
+          "label": "Teléfono",
+          "type": "text",
+          "options": [],
+          "order": 2
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 24,
+    "fields": {
+      "code": "sat_catalog_prod_serv",
+      "name": "Clave Producto/Servicio SAT",
+      "plural_name": "Claves Productos/Servicios SAT",
+      "model": "sat_catalog_prod_serv",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "clave",
+          "label": "Clave",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "descripcion",
+          "label": "Descripción",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 25,
+    "fields": {
+      "code": "sat_catalog_unit",
+      "name": "Clave Unidad SAT",
+      "plural_name": "Claves Unidades SAT",
+      "model": "sat_catalog_unit",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "clave",
+          "label": "Clave",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 26,
+    "fields": {
+      "code": "quotation",
+      "name": "Cotización",
+      "plural_name": "Cotizaciones",
+      "model": "quotation",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 27,
+    "fields": {
+      "code": "fast_sales_proposal",
+      "name": "Propuesta de Venta Rápida",
+      "plural_name": "Propuestas de Venta Rápida",
+      "model": "fastsalesproposal",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 28,
+    "fields": {
+      "code": "fast_quotation",
+      "name": "Cotización Rápida",
+      "plural_name": "Cotizaciones Rápidas",
+      "model": "fastquotation",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": [
+            {
+              "action_id": "export",
+              "icon": "request_page",
+              "title": "Exportar",
+              "description": "Cotización rápida.",
+              "color": "primary",
+              "order": 0
+            },
+            {
+              "action_id": "visualize",
+              "icon": "preview",
+              "title": "Visualizar",
+              "description": "Vista externa.",
+              "color": "primary",
+              "order": 1
+            }
+          ]
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 29,
+    "fields": {
+      "code": "service_category",
+      "name": "Categoría de Servicio",
+      "plural_name": "Categorías de Servicio",
+      "model": "service_category",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 30,
+    "fields": {
+      "code": "external_note_template",
+      "name": "Plantilla de Nota Externa",
+      "plural_name": "Plantillas de Notas Externas",
+      "model": "external_note_template",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 31,
+    "fields": {
+      "code": "service",
+      "name": "Servicio",
+      "plural_name": "Servicios",
+      "model": "service",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": true,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": true,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "short_description",
+          "label": "Descripción Corta",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "long_description",
+          "label": "Descripción Larga",
+          "type": "text",
+          "options": [],
+          "order": 2
+        },
+        {
+          "key": "category",
+          "label": "Categoría",
+          "type": "text",
+          "options": [],
+          "order": 3
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  },
+  {
+    "model": "core.entitymodel",
+    "pk": 32,
+    "fields": {
+      "code": "entity_model",
+      "name": "Entity Model",
+      "plural_name": "Entity Models",
+      "model": "entity_model",
+      "module": "",
+      "is_active": true,
+      "views": [
+        {
+          "type": "list",
+          "route": "list",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 0,
+          "secondary_actions": []
+        },
+        {
+          "type": "form",
+          "route": "form",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 1,
+          "secondary_actions": []
+        },
+        {
+          "type": "show",
+          "route": "show",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 2,
+          "secondary_actions": []
+        },
+        {
+          "type": "update",
+          "route": "update",
+          "action_buttons_tool": "",
+          "comments_tool": false,
+          "card_view": false,
+          "order": 3,
+          "secondary_actions": []
+        }
+      ],
+      "search_attributes": [
+        {
+          "key": "code",
+          "label": "Código",
+          "type": "text",
+          "options": [],
+          "order": 0
+        },
+        {
+          "key": "name",
+          "label": "Nombre",
+          "type": "text",
+          "options": [],
+          "order": 1
+        },
+        {
+          "key": "plural_name",
+          "label": "Nombre Plural",
+          "type": "text",
+          "options": [],
+          "order": 2
+        },
+        {
+          "key": "module",
+          "label": "Módulo",
+          "type": "text",
+          "options": [],
+          "order": 3
+        },
+        {
+          "key": "model",
+          "label": "Modelo",
+          "type": "text",
+          "options": [],
+          "order": 4
+        }
+      ],
+      "created_at": "2026-01-01T00:00:00Z",
+      "updated_at": "2026-01-01T00:00:00Z"
+    }
+  }
+]

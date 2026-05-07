@@ -1,9 +1,12 @@
 from django.urls import path
 
 from .views import (
+    ExternalNoteTemplateListCreateView,
+    ExternalNoteTemplateRetrieveUpdateDestroyView,
     QuotationLineListCreateView,
     QuotationLineRetrieveUpdateDestroyView,
     QuotationListCreateView,
+    QuotationPDFView,
     QuotationRetrieveUpdateDestroyView,
     FastQuotationConvertToProposalView,
     FastQuotationLineListCreateView,
@@ -15,12 +18,19 @@ from .views import (
     FastSalesProposalPDFsView,
     FastSalesProposalRetrieveUpdateDestroyView,
     SalesDashboardView,
+    SalesProposalListCreateView,
+    SalesProposalRetrieveUpdateDestroyView,
 )
 
 urlpatterns = [
     path('dashboard/', SalesDashboardView.as_view(), name='sales-dashboard'),
+    path('external-note-templates/', ExternalNoteTemplateListCreateView.as_view(), name='external-note-template-list-create'),
+    path('external-note-templates/<uuid:pk>/', ExternalNoteTemplateRetrieveUpdateDestroyView.as_view(), name='external-note-template-detail'),
+    path('sales-proposals/', SalesProposalListCreateView.as_view(), name='sales-proposal-list-create'),
+    path('sales-proposals/<uuid:pk>/', SalesProposalRetrieveUpdateDestroyView.as_view(), name='sales-proposal-detail'),
     path('quotations/', QuotationListCreateView.as_view(), name='quotation-list-create'),
     path('quotations/<uuid:pk>/', QuotationRetrieveUpdateDestroyView.as_view(), name='quotation-detail'),
+    path('quotations/<uuid:pk>/pdf/', QuotationPDFView.as_view(), name='quotation-pdf'),
     path('quotation-lines/', QuotationLineListCreateView.as_view(), name='quotation-line-list-create'),
     path('quotation-lines/<uuid:pk>/', QuotationLineRetrieveUpdateDestroyView.as_view(), name='quotation-line-detail'),
     path('fast-sales-proposals/', FastSalesProposalListCreateView.as_view(), name='fast-sales-proposal-list-create'),

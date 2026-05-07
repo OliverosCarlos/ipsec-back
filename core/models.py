@@ -56,3 +56,43 @@ class CommentAttachment(models.Model):
 
     def __str__(self):
         return f"{self.comment.id} - {self.filename()}"
+
+
+# ---------------------------------------------------------------------------
+# EntityModel
+# ---------------------------------------------------------------------------
+class EntityModel(models.Model):
+    """
+    Describe una entidad del frontend (partner, department, product, etc.).
+    Refleja la interface `EntityModel` usada en Atomic Angular.
+    """
+
+    code = models.SlugField(
+        max_length=60,
+        unique=True,
+        help_text="Identificador estable (ej: 'partner', 'department').",
+    )
+    name = models.CharField(max_length=120)
+    plural_name = models.CharField(max_length=120)
+    model = models.CharField(
+        max_length=120,
+        blank=True,
+        default="",
+        help_text="Alias del modelo backend (ej: 'partner').",
+    )
+    is_active = models.BooleanField(default=True)
+
+    views = models.JSONField(blank=True, default=list)
+    search_attributes = models.JSONField(blank=True, default=list)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = "core_entity_model"
+        ordering = ["code"]
+        verbose_name = "Entity Model"
+        verbose_name_plural = "Entity Models"
+
+    def __str__(self) -> str:
+        return f"{self.code} ({self.name})"

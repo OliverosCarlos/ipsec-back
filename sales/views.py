@@ -16,8 +16,10 @@ from rest_framework.views import APIView
 from xhtml2pdf import pisa
 
 from administration.models import Company
-from .models import Quotation, QuotationLine, FastSalesProposal, FastQuotation, FastQuotationLine
+from .filters import FastQuotationFilter, FastSalesProposalFilter, QuotationFilter, SalesProposalFilter
+from .models import ExternalNoteTemplate, Quotation, QuotationLine, FastSalesProposal, FastQuotation, FastQuotationLine, SalesProposal
 from .serializers import (
+    ExternalNoteTemplateSerializer,
     QuotationLineSerializer,
     QuotationReadSerializer,
     QuotationSerializer,
@@ -27,7 +29,23 @@ from .serializers import (
     FastQuotationSerializer,
     FastSalesProposalReadSerializer,
     FastSalesProposalSerializer,
+    SalesProposalSerializer,
+    SalesProposalReadSerializer,
 )
+
+
+# ── ExternalNoteTemplate ───────────────────────────────────────
+
+class ExternalNoteTemplateListCreateView(generics.ListCreateAPIView):
+    queryset = ExternalNoteTemplate.objects.all()
+    serializer_class = ExternalNoteTemplateSerializer
+    filterset_fields = ['is_active']
+    search_fields = ['code', 'name']
+
+
+class ExternalNoteTemplateRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = ExternalNoteTemplate.objects.all()
+    serializer_class = ExternalNoteTemplateSerializer
 
 
 # ── Quotation ──────────────────────────────────────────────────
@@ -39,7 +57,7 @@ class QuotationListCreateView(generics.ListCreateAPIView):
         'price_list', 'salesperson',
     ).prefetch_related('lines__product_service_variation', 'lines__clave_unidad')
     search_fields = ['number', 'reference', 'partner__legal_name', 'partner__rfc']
-    filterset_fields = ['status', 'partner', 'currency', 'salesperson', 'is_active']
+    filterset_class = QuotationFilter
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -84,7 +102,7 @@ class FastQuotationListCreateView(generics.ListCreateAPIView):
         'proposal', 'currency', 'salesperson',
     ).prefetch_related('lines__product_service_variation', 'lines__clave_unidad')
     search_fields = ['name', 'description', 'proposal__name']
-    filterset_fields = ['status', 'proposal', 'currency', 'salesperson', 'is_active']
+    filterset_class = FastQuotationFilter
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -97,7 +115,6 @@ class FastQuotationRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIVi
         'proposal', 'currency', 'salesperson',
     ).prefetch_related('lines__product_service_variation', 'lines__clave_unidad')
     search_fields = ['name', 'description', 'proposal__name']
-    filterset_fields = ['status', 'proposal', 'currency', 'salesperson', 'is_active']
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -122,7 +139,37 @@ class FastQuotationLineRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyA
     serializer_class = FastQuotationLineSerializer
 
 
-# ── FastSalesProposal ────────────────────────────────────────
+# ── SalesProposal ────────────────────────────────────────
+
+class SalesProposalListCreateView(generics.ListCreateAPIView):
+    queryset = SalesProposal.objects.select_related(
+        'partner', 'partner_contact', 'salesperson',
+    ).prefetch_related(
+        'quotations',
+    )
+    search_fields = ['name', 'objective', 'partner__legal_name']
+    filterset_class = SalesProposalFilter
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return SalesProposalReadSerializer
+        return SalesProposalSerializer
+
+
+class SalesProposalRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = SalesProposal.objects.select_related(
+        'partner', 'partner_contact', 'salesperson',
+    ).prefetch_related(
+        'quotations',
+    )
+
+    def get_serializer_class(self):
+        if self.request.method == 'GET':
+            return SalesProposalReadSerializer
+        return SalesProposalSerializer
+
+
+# ── FastSalesProposal ───────────────────────────────────────
 
 class FastSalesProposalListCreateView(generics.ListCreateAPIView):
     queryset = FastSalesProposal.objects.select_related(
@@ -133,7 +180,7 @@ class FastSalesProposalListCreateView(generics.ListCreateAPIView):
         'quotations__currency',
     )
     search_fields = ['name', 'objective', 'partner__legal_name']
-    filterset_fields = ['status', 'partner', 'salesperson', 'is_active']
+    filterset_class = FastSalesProposalFilter
 
     def get_serializer_class(self):
         if self.request.method == 'GET':
@@ -247,6 +294,76 @@ class FastQuotationPDFView(APIView):
         buffer.seek(0)
         response = HttpResponse(buffer, content_type='application/pdf')
         response['Content-Disposition'] = f'inline; filename="FQ-{quotation.pk}.pdf"'
+        return response
+
+
+# ── Quotation PDF Report ──────────────────────────────────────
+
+class QuotationPDFView(APIView):
+    """GET /quotations/<uuid:pk>/pdf/"""
+
+    @staticmethod
+    def _link_callback(uri, rel):
+        """Resolve static/media URIs to absolute filesystem paths for xhtml2pdf."""
+        if uri.startswith(django_settings.MEDIA_URL):
+            path = os.path.join(
+                django_settings.MEDIA_ROOT,
+                uri.replace(django_settings.MEDIA_URL, ''),
+            )
+        elif uri.startswith(django_settings.STATIC_URL):
+            path = os.path.join(
+                django_settings.BASE_DIR,
+                uri.replace(django_settings.STATIC_URL, 'sales/static/'),
+            )
+        else:
+            return uri
+        if os.path.isfile(path):
+            return path
+        return uri
+
+    def get(self, request, pk):
+        try:
+            quotation = Quotation.objects.select_related(
+                'partner', 'partner_contact', 'currency', 'salesperson',
+            ).get(pk=pk)
+        except Quotation.DoesNotExist:
+            return Response(
+                {'detail': 'Cotización no encontrada.'},
+                status=status.HTTP_404_NOT_FOUND,
+            )
+
+        lines = quotation.lines.select_related(
+            'product_service_variation', 'clave_unidad',
+        ).order_by('sequence')
+
+        company = Company.objects.prefetch_related(
+            'addresses', 'bank_accounts__bank',
+        ).first()
+
+        html_string = render_to_string('sales/quotation_pdf.html', {
+            'quotation': quotation,
+            'lines': lines,
+            'company': company,
+            'now': timezone.now(),
+        })
+
+        buffer = BytesIO()
+        pisa_status = pisa.CreatePDF(
+            html_string,
+            dest=buffer,
+            encoding='utf-8',
+            link_callback=self._link_callback,
+        )
+
+        if pisa_status.err:
+            return Response(
+                {'detail': 'Error al generar el PDF.'},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        buffer.seek(0)
+        response = HttpResponse(buffer, content_type='application/pdf')
+        response['Content-Disposition'] = f'inline; filename="{quotation.number}.pdf"'
         return response
 
 

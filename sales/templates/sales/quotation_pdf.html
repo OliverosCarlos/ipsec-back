@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Cotización FQ-{{ quotation.pk }}</title>
+    <title>Cotización {{ quotation.number }}</title>
     <style>
         /* ══════════════════════════════════════════════════════════════
            xhtml2pdf best-practice notes:
@@ -41,7 +41,7 @@
             margin: 0;
         }
 
-        /* ── Spacers (use empty rows / divs instead of margin) ── */
+        /* ── Spacers ── */
         .spacer-sm {
             height: 6pt;
             font-size: 1pt;
@@ -60,22 +60,11 @@
             line-height: 1pt;
         }
 
-        /* ── Generic helpers ─────────────────────────── */
-        .center {
-            text-align: center;
-        }
-
-        .left {
-            text-align: left;
-        }
-
-        .right {
-            text-align: right;
-        }
-
-        .bold {
-            font-weight: bold;
-        }
+        /* ── Generic helpers ── */
+        .center { text-align: center; }
+        .left   { text-align: left; }
+        .right  { text-align: right; }
+        .bold   { font-weight: bold; }
 
         .total-text {
             text-align: center;
@@ -86,7 +75,7 @@
             font-weight: bold;
         }
 
-        /* ══ Decorative top line (adjust colors/sizes here) ══ */
+        /* ══ Decorative top line ══ */
         .top-accent-line {
             width: 100%;
             border-collapse: collapse;
@@ -95,42 +84,18 @@
 
         .top-accent-line td {
             height: 2pt;
-            /* change line thickness */
             font-size: 1pt;
             line-height: 1pt;
         }
 
-        .line-1 {
-            background-color: #00ae22;
-        }
-
-        .line-2 {
-            background-color: #5ecf47;
-        }
-
-        .line-3 {
-            background-color: #ff7601;
-        }
-
-        .line-4 {
-            background-color: #00698b;
-        }
-
-        .line-5 {
-            background-color: #00b5c5;
-        }
-
-        .line-6 {
-            background-color: #00698b;
-        }
-
-        .line-7 {
-            background-color: #ff7601;
-        }
-
-        .line-8 {
-            background-color: #00ae22;
-        }
+        .line-1 { background-color: #00ae22; }
+        .line-2 { background-color: #5ecf47; }
+        .line-3 { background-color: #ff7601; }
+        .line-4 { background-color: #00698b; }
+        .line-5 { background-color: #00b5c5; }
+        .line-6 { background-color: #00698b; }
+        .line-7 { background-color: #ff7601; }
+        .line-8 { background-color: #00ae22; }
 
         /* ══ Company Header ══ */
         .company-header {
@@ -146,7 +111,6 @@
             font-size: 7pt;
             font-weight: bold;
             color: #000;
-            padding-bottom: -3pt;
         }
 
         .company-address {
@@ -170,8 +134,6 @@
             font-weight: bold;
             padding-bottom: 1pt;
         }
-
-        .client-box-body {}
 
         .client-data td {
             font-size: 6pt;
@@ -329,30 +291,14 @@
             border: 0;
         }
 
-        .footer-text {
-            text-align: center;
-            display: block;
-        }
-
-        .footer-phone {
-            background-color: #00ae22;
-        }
-
-        .footer-email {
-            background-color: #00b5c5;
-        }
-
-        .footer-web {
-            background-color: #ff7601;
-        }
-
-        .footer-social {
-            background-color: #00698b;
-        }
+        .footer-phone   { background-color: #00ae22; }
+        .footer-email   { background-color: #00b5c5; }
+        .footer-web     { background-color: #ff7601; }
+        .footer-social  { background-color: #00698b; }
 
         .footer-social img {
             display: inline-block;
-            margin-right: 4px; /* Prueba padding-right si margin falla */
+            margin-right: 4px;
         }
 
     </style>
@@ -398,7 +344,7 @@
                 <td class="footer-social" width="25%">
                     <table width="100%" cellpadding="0" cellspacing="0">
                         <tr>
-                            <td style="width:25%; text-align:center; margin: 0px;"><img src="{% static 'sales/img/facebook.png' %}" height="14" width="14"></td>
+                            <td style="width:25%; text-align:center;"><img src="{% static 'sales/img/facebook.png' %}" height="14" width="14"></td>
                             <td style="width:25%; text-align:center;"><img src="{% static 'sales/img/linkedin.png' %}" height="14" width="14"></td>
                             <td style="width:25%; text-align:center;"><img src="{% static 'sales/img/instagram.png' %}" height="14" width="14"></td>
                             <td style="width:25%; text-align:center;"><img src="{% static 'sales/img/gorjeo.png' %}" height="14" width="14"></td>
@@ -463,40 +409,40 @@
                 <table width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td width="30%">DATOS DEL CLIENTE</td>
-                        <td width="70%" class="right">COTIZACIÓN NO OFICIAL</td>
+                        <td width="70%" class="right">COTIZACIÓN NO. {{ quotation.number }}</td>
                     </tr>
                 </table>
             </td>
         </tr>
         <tr>
-            <td class="client-box-body">
+            <td>
                 <table width="100%" cellpadding="0" cellspacing="0">
                     <tr>
                         <td width="50%" valign="top">
                             <table class="client-data" width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td class="label">NOMBRE:</td>
-                                    <td>DESARROLLO URBANO DE TEPIC, S.A. DE C.V</td>
+                                    <td>{{ quotation.partner.legal_name|upper }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="label">DIRECCIÓN:</td>
-                                    <td>CARRTERA TEPIC-MIRAMAR KM.745 COL. OTRA NO ESPECIFICADA EN EL CATALOGO</td>
+                                    <td class="label">RFC:</td>
+                                    <td>{{ quotation.partner.rfc|default:"-" }}</td>
                                 </tr>
                                 <tr>
                                     <td class="label">TELÉFONO:</td>
-                                    <td>3112182034</td>
+                                    <td>{{ quotation.partner.phone|default:"-" }}</td>
                                 </tr>
                                 <tr>
                                     <td class="label">CONTACTO:</td>
-                                    <td>DALIA LIVIER MERCADO PRADO</td>
+                                    <td>{{ quotation.partner_contact.name|upper|default:"-" }}</td>
                                 </tr>
                                 <tr>
-                                    <td class="label">PROYECTO:</td>
-                                    <td>CABLE UTP MAR 26</td>
+                                    <td class="label">REFERENCIA:</td>
+                                    <td>{{ quotation.reference|upper|default:"-" }}</td>
                                 </tr>
                                 <tr>
                                     <td class="label">VIGENCIA:</td>
-                                    <td>{{ quotation.validity_date|date:"d/m/Y" }}</td>
+                                    <td>{{ quotation.validity_date|date:"d/m/Y"|default:"-" }}</td>
                                 </tr>
                             </table>
                         </td>
@@ -504,29 +450,22 @@
                             <table class="client-data" width="100%" cellpadding="0" cellspacing="0">
                                 <tr>
                                     <td class="label">FECHA:</td>
-                                    <td>{{ quotation.date|date:"j" }} {{ quotation.date|date:"F"|upper }} {{
-                                        quotation.date|date:"Y" }}</td>
+                                    <td>{{ quotation.date|date:"j" }} {{ quotation.date|date:"F"|upper }} {{ quotation.date|date:"Y" }}</td>
                                 </tr>
                                 <tr>
                                     <td class="label">CONDICIONES COMERCIALES:</td>
-                                    <td>N/A</td>
+                                    <td>{{ quotation.payment_terms_days }} DÍAS</td>
                                 </tr>
                                 <tr>
-                                    <td class="label">TIEMPO DE ENTREGA:</td>
-                                    <td>N/A</td>
+                                    <td class="label">MONEDA:</td>
+                                    <td>{{ quotation.currency.description|default:quotation.currency.code }}</td>
                                 </tr>
-                                <tr>
-                                    <td class="label">LUGAR DE ENTREGA:</td>
-                                    <td>N/A</td>
-                                </tr>
+                                {% if quotation.salesperson %}
                                 <tr>
                                     <td class="label">EJECUTIVO DE CUENTA:</td>
-                                    <td>ARACELI SALAZAR GALEANA</td>
+                                    <td>{{ quotation.salesperson.get_full_name|default:quotation.salesperson.email|upper }}</td>
                                 </tr>
-                                <tr>
-                                    <td class="label">TELÉFONOS:</td>
-                                    <td>CEL: (311)XXX-XXXX OFICINA: (311)XXX-XXXX</td>
-                                </tr>
+                                {% endif %}
                             </table>
                         </td>
                     </tr>
@@ -549,15 +488,11 @@
         </tr>
     </table>
 
-    {# ══════════════ INTRO + PROJECT TITLE ══════════════ #}
+    {# ══════════════ INTRO ══════════════ #}
     <p class="intro" style="margin-top: 10px;">
         Por medio de la presente <span class="bold">{{ company.legal_name|upper|default:"LA EMPRESA" }}</span>
-        pone a su disposición la siguiente cotización para cumplir con los requerimientos del proyecto:
+        pone a su disposición la siguiente cotización para cumplir con los requerimientos solicitados.
     </p>
-
-    {% if quotation.description %}
-    <p class="project-title" style="margin-top: 5pt;">{{ quotation.description|upper }}</p>
-    {% endif %}
 
     {# ══════════════ LINES TABLE ══════════════ #}
     <table class="lines-table" cellpadding="0" cellspacing="0" style="margin-top: 5pt;">
@@ -577,13 +512,13 @@
             {% for line in lines %}
             <tr class="qt-line">
                 <td class="center">{{ forloop.counter }}</td>
-                <td class="center">{{ line.product_variation.sku|default:"-" }}</td>
+                <td class="center">{{ line.product_service_variation.sku|default:"-" }}</td>
                 <td>
-                {% if line.description %}
-                    {{ line.description }}
-                {% else %}
-                    {{ line.product_variation.display_name }}
-                {% endif %}
+                    {% if line.description %}
+                        {{ line.description }}
+                    {% else %}
+                        {{ line.product_service_variation.display_name }}
+                    {% endif %}
                 </td>
                 <td class="center">{{ line.quantity|floatformat:0 }}</td>
                 <td class="right">${{ line.unit_price|floatformat:2 }}</td>
@@ -613,7 +548,7 @@
                 <td colspan="1" class="totals-value">-${{ quotation.amount_discount|floatformat:2 }}</td>
             </tr>
             {% endif %}
-            <tr class="total-qt-line totals-total">
+            <tr class="total-qt-line">
                 <td colspan="7" class="totals-1label">TOTAL:</td>
                 <td colspan="1" class="totals-value">${{ quotation.amount_total|floatformat:2 }}</td>
             </tr>
@@ -623,7 +558,7 @@
     <div class="spacer-sm"></div>
 
     <p class="total-text">
-       {{ quotation.amount_total|amount_to_words }}
+        {{ quotation.amount_total|amount_to_words }}
     </p>
 
     {# ══════════════ SIGNATURE & BANK ══════════════ #}
@@ -677,7 +612,6 @@
             </td>
         </tr>
     </table>
-
 
     {# ══════════════ NOTES ══════════════ #}
     {% if quotation.external_notes %}

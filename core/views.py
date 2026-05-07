@@ -2,9 +2,14 @@ from knox.views import LoginView as KnoxLoginView, LogoutView as KnoxLogoutView,
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
-from core.models import Comment
+from core.models import Comment, EntityModel
+from .filters import EntityModelFilter
+from .pagination import EntityModelPagination
 
-from .serializers import CommentSerializer, LoginSerializer
+from .serializers import (
+    CommentSerializer, LoginSerializer,
+    EntityModelSerializer,
+)
 
 from rest_framework import generics, viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
@@ -168,4 +173,29 @@ class FilteredGroupedCommentView(APIView):
                 'comments': serialized.data
             })
         return response
-    #END FILTERED GROUPED COMMENT VIEW
+
+
+# ---------------------------------------------------------------------------
+# EntityModel views
+# ---------------------------------------------------------------------------
+
+class EntityModelListView(generics.ListCreateAPIView):
+    queryset = EntityModel.objects.all()
+    serializer_class = EntityModelSerializer
+    permission_classes = [IsAuthenticated]
+    filterset_class = EntityModelFilter
+    pagination_class = EntityModelPagination
+
+
+class EntityModelDetailView(generics.RetrieveUpdateDestroyAPIView):
+    queryset = EntityModel.objects.all()
+    serializer_class = EntityModelSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'pk'
+
+
+class EntityModelByCodeView(generics.RetrieveAPIView):
+    queryset = EntityModel.objects.all()
+    serializer_class = EntityModelSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_field = 'code'

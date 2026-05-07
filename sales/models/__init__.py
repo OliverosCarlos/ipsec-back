@@ -1,7 +1,11 @@
-from .quotation import Quotation, QuotationLine
+from .catalogs import ExternalNoteTemplate
+from .quotation import Quotation, QuotationDailySequence, QuotationLine
 from .fast_sales_proposal import FastSalesProposal, FastQuotation, FastQuotationLine
+from .sales_proposal import SalesProposal
 
 __all__ = [
-    'Quotation', 'QuotationLine',
+    'ExternalNoteTemplate',
+    'Quotation', 'QuotationDailySequence', 'QuotationLine',
     'FastSalesProposal', 'FastQuotation', 'FastQuotationLine',
+    'SalesProposal',
 ]

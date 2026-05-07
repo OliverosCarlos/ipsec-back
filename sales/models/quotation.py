@@ -1,10 +1,26 @@
 from decimal import Decimal
 
+from django.db import IntegrityError, transaction
 from django.core.validators import MinValueValidator
 from django.db import models
+from django.utils import timezone
 
 from core.models import BaseModel
 from ipsec_back import settings
+
+
+class QuotationDailySequence(models.Model):
+    """Stores the latest quotation sequence generated for each calendar day."""
+
+    sequence_date = models.DateField(unique=True, db_index=True)
+    last_sequence = models.PositiveIntegerField(default=0)
+
+    class Meta:
+        verbose_name = 'Quotation Daily Sequence'
+        verbose_name_plural = 'Quotation Daily Sequences'
+
+    def __str__(self):
+        return f'{self.sequence_date}: {self.last_sequence}'
 
 
 class Quotation(BaseModel):
@@ -18,6 +34,16 @@ class Quotation(BaseModel):
         SENT = 'sent', 'Enviada'
         CONFIRMED = 'confirmed', 'Confirmada'
         CANCELLED = 'cancelled', 'Cancelada'
+
+    # --- Propuesta padre (opcional) ---
+    proposal = models.ForeignKey(
+        'sales.SalesProposal',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='quotations',
+        help_text='Propuesta de venta a la que pertenece esta cotización (opcional)',
+    )
 
     # --- Identificación ---
     number = models.CharField(
@@ -176,6 +202,48 @@ class Quotation(BaseModel):
 
     def __str__(self):
         return f'{self.number} - {self.partner.legal_name}'
+
+    def set_salesperson_from_user(self, user):
+        """Assign logged-in user as salesperson when the field is empty."""
+        if self.salesperson_id is None and user and getattr(user, 'is_authenticated', False):
+            self.salesperson = user
+
+    @staticmethod
+    def _month_code(value_date):
+        month_codes = {
+            1: 'A', 2: 'B', 3: 'C', 4: 'D', 5: 'E', 6: 'F',
+            7: 'G', 8: 'H', 9: 'I', 10: 'J', 11: 'K', 12: 'L',
+        }
+        return month_codes[value_date.month]
+
+    @classmethod
+    def _next_daily_sequence(cls, value_date):
+        with transaction.atomic():
+            try:
+                daily_sequence, _ = QuotationDailySequence.objects.select_for_update().get_or_create(
+                    sequence_date=value_date,
+                    defaults={'last_sequence': 0},
+                )
+            except IntegrityError:
+                daily_sequence = QuotationDailySequence.objects.select_for_update().get(
+                    sequence_date=value_date,
+                )
+
+            daily_sequence.last_sequence += 1
+            daily_sequence.save(update_fields=['last_sequence'])
+            return daily_sequence.last_sequence
+
+    @classmethod
+    def generate_number(cls, value_date):
+        daily_sequence = cls._next_daily_sequence(value_date)
+        month_code = cls._month_code(value_date)
+        return f'{month_code}{value_date.day:02d}{value_date.year % 100:02d}-{daily_sequence}.1'
+
+    def save(self, *args, **kwargs):
+        if not self.number:
+            reference_date = self.date or timezone.localdate()
+            self.number = self.generate_number(reference_date)
+        super().save(*args, **kwargs)
 
     # --- Cálculo de totales ---
     def compute_totals(self):

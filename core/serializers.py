@@ -2,7 +2,10 @@ from django.contrib.auth import authenticate
 
 from rest_framework import serializers
 
-from core.models import Comment, CommentAttachment
+from core.models import (
+    Comment, CommentAttachment,
+    EntityModel,
+)
 from django.contrib.contenttypes.models import ContentType
 
 from entities.models.employees import Employee
@@ -92,3 +95,17 @@ class CommentSerializer(serializers.ModelSerializer):
             for f in files:
                 CommentAttachment.objects.create(comment=comment, file=f)
         return comment
+
+
+# ---------------------------------------------------------------------------
+# EntityModel serializers
+# ---------------------------------------------------------------------------
+
+class EntityModelSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EntityModel
+        fields = (
+            'id', 'code', 'name', 'plural_name', 'model', 'is_active',
+            'views', 'search_attributes',
+            'created_at', 'updated_at',
+        )
