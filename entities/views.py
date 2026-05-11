@@ -3,6 +3,7 @@ from rest_framework.pagination import PageNumberPagination
 from rest_framework.parsers import FormParser, JSONParser, MultiPartParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
+from django.db.models import Prefetch
 
 from .filters import PartnerFilter
 from .models import (
@@ -16,7 +17,8 @@ from .models import (
     EmployeeStatus,
     Employee,
 )
-from .models.catalogs import PersonTitle, JobPosition, CompanySector
+from .models.catalogs import PersonTitle, JobPosition, CompanySector, Country
+from invoicing.models.sat import SatCatalog
 from .serializers import (
 	PartnerSerializer,
 	PartnerReadSerializer,
@@ -41,10 +43,31 @@ from .serializers import (
 # ── Partner ──────────────────────────────────────────────
 
 class PartnerListCreateView(generics.ListCreateAPIView):
-	queryset = Partner.objects.select_related('tax_regime', 'country')
 	parser_classes = [MultiPartParser, FormParser, JSONParser]
 	search_fields = ['rfc', 'legal_name', 'commercial_name', 'email_billing']
 	filterset_class = PartnerFilter
+
+	def get_queryset(self):
+		"""Optimize queryset with prefetch_related for nested serializers."""
+		# Prefetch addresses with their related countries
+		addresses_qs = PartnerAddress.objects.select_related('country')
+		address_prefetch = Prefetch('addresses', queryset=addresses_qs)
+		
+		# Prefetch contacts with their related job_position and person_title
+		contacts_qs = PartnerContact.objects.select_related('job_position', 'person_title')
+		contact_prefetch = Prefetch('contacts', queryset=contacts_qs)
+		
+		# Prefetch roles with their related SatCatalog fields
+		roles_qs = PartnerRole.objects.select_related(
+			'diot_third_type', 'diot_operation_type', 'default_currency'
+		)
+		role_prefetch = Prefetch('roles', queryset=roles_qs)
+		
+		return Partner.objects.select_related(
+			'tax_regime', 'country', 'company_sector'
+		).prefetch_related(
+			address_prefetch, contact_prefetch, role_prefetch
+		)
 
 	def get_serializer_class(self):
 		if self.request.method == 'GET':
@@ -53,8 +76,29 @@ class PartnerListCreateView(generics.ListCreateAPIView):
 
 
 class PartnerRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
-	queryset = Partner.objects.select_related('tax_regime', 'country')
 	parser_classes = [MultiPartParser, FormParser, JSONParser]
+
+	def get_queryset(self):
+		"""Optimize queryset with prefetch_related for nested serializers."""
+		# Prefetch addresses with their related countries
+		addresses_qs = PartnerAddress.objects.select_related('country')
+		address_prefetch = Prefetch('addresses', queryset=addresses_qs)
+		
+		# Prefetch contacts with their related job_position and person_title
+		contacts_qs = PartnerContact.objects.select_related('job_position', 'person_title')
+		contact_prefetch = Prefetch('contacts', queryset=contacts_qs)
+		
+		# Prefetch roles with their related SatCatalog fields
+		roles_qs = PartnerRole.objects.select_related(
+			'diot_third_type', 'diot_operation_type', 'default_currency'
+		)
+		role_prefetch = Prefetch('roles', queryset=roles_qs)
+		
+		return Partner.objects.select_related(
+			'tax_regime', 'country', 'company_sector'
+		).prefetch_related(
+			address_prefetch, contact_prefetch, role_prefetch
+		)
 
 	def get_serializer_class(self):
 		if self.request.method == 'GET':
