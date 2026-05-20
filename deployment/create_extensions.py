@@ -61,6 +61,7 @@ if __name__ == "__main__":
     parser.add_argument("--db-user", default="postgres", help="Usuario de PostgreSQL (default: postgres)")
     parser.add_argument("--db-host", default="localhost", help="Host de PostgreSQL (default: localhost)")
     parser.add_argument("--db-port", default="5432", help="Puerto de PostgreSQL (default: 5432)")
+    parser.add_argument("--db-password", default=None, help="Password de PostgreSQL (opcional, si no se pasa se pedirá por consola)")
 
     args = parser.parse_args()
 
@@ -70,6 +71,9 @@ if __name__ == "__main__":
         print("Operación cancelada.")
         sys.exit(0)
 
-    password = getpass.getpass(f"Ingresa el password para el usuario '{args.db_user}': ")
+    if args.db_password is not None:
+        password = args.db_password
+    else:
+        password = getpass.getpass(f"Ingresa el password para el usuario '{args.db_user}': ")
 
     create_extensions(args.db_name, args.db_user, args.db_host, args.db_port, password)
