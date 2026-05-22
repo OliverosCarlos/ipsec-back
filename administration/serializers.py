@@ -1,6 +1,8 @@
 from rest_framework import serializers
 from django.db import transaction
 
+from entities.models.catalogs import Bank, CompanySector, Country, JobPosition, PersonTitle
+from invoicing.models.sat import SatCatalog
 from .models import (
     Company, CompanyAddress, CompanyContact,
     CompanyBankAccount, CompanyCertificate,
@@ -135,4 +137,131 @@ class CompanyFullSetupSerializer(serializers.ModelSerializer):
 
     def to_representation(self, instance):
         return CompanyReadSerializer(instance, context=self.context).data
+
+
+# ── Bulk-action item serializers ─────────────────────────────
+
+ACTION_CHOICES = [('created', 'created'), ('updated', 'updated'), ('deleted', 'deleted')]
+
+
+class _BulkItemMixin(serializers.Serializer):
+    """Base mixin: adds 'action' flag and validates id presence for update/delete."""
+    action = serializers.ChoiceField(choices=ACTION_CHOICES)
+    id = serializers.UUIDField(required=False, allow_null=True)
+
+    def validate(self, attrs):
+        action = attrs.get('action')
+        if action in ('updated', 'deleted') and not attrs.get('id'):
+            raise serializers.ValidationError({'id': 'Required for action "updated" or "deleted".'})
+        return attrs
+
+
+class CompanyAddressBulkItemSerializer(_BulkItemMixin):
+    kind = serializers.ChoiceField(choices=CompanyAddress.KIND_CHOICES, required=False)
+    name = serializers.CharField(required=False, allow_blank=True, default='')
+    street = serializers.CharField(required=False, allow_blank=True, default='')
+    ext_no = serializers.CharField(required=False, allow_blank=True, default='')
+    int_no = serializers.CharField(required=False, allow_blank=True, default='')
+    neighborhood = serializers.CharField(required=False, allow_blank=True, default='')
+    city = serializers.CharField(required=False, allow_blank=True, default='')
+    state = serializers.CharField(required=False, allow_blank=True, default='')
+    country = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(), required=False,
+    )
+    zip_code = serializers.CharField(required=False)
+    is_primary = serializers.BooleanField(required=False)
+    is_active = serializers.BooleanField(required=False)
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if attrs['action'] == 'created' and not attrs.get('zip_code'):
+            raise serializers.ValidationError({'zip_code': 'Required for action "created".'})
+        return attrs
+
+
+class CompanyContactBulkItemSerializer(_BulkItemMixin):
+    name = serializers.CharField(required=False)
+    email = serializers.EmailField(required=False, allow_blank=True, default='')
+    phone = serializers.CharField(required=False, allow_blank=True, default='')
+    phone_landline = serializers.CharField(required=False, allow_blank=True, default='')
+    phone_landline_ext = serializers.CharField(required=False, allow_blank=True, default='')
+    job_position = serializers.PrimaryKeyRelatedField(
+        queryset=JobPosition.objects.all(), required=False, allow_null=True,
+    )
+    person_title = serializers.PrimaryKeyRelatedField(
+        queryset=PersonTitle.objects.all(), required=False, allow_null=True,
+    )
+    gender = serializers.ChoiceField(
+        choices=CompanyContact.GENDER_CHOICES, required=False, default='N',
+    )
+    is_primary = serializers.BooleanField(required=False)
+    is_active = serializers.BooleanField(required=False)
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if attrs['action'] == 'created' and not attrs.get('name'):
+            raise serializers.ValidationError({'name': 'Required for action "created".'})
+        return attrs
+
+
+class CompanyBankAccountBulkItemSerializer(_BulkItemMixin):
+    bank = serializers.PrimaryKeyRelatedField(queryset=Bank.objects.all(), required=False)
+    account_number = serializers.CharField(required=False, allow_blank=True, default='')
+    clabe = serializers.CharField(required=False)
+    account_holder = serializers.CharField(required=False, allow_blank=True, default='')
+    currency = serializers.PrimaryKeyRelatedField(
+        queryset=SatCatalog.objects.filter(catalog='c_Moneda'),
+        required=False, allow_null=True,
+    )
+    swift_code = serializers.CharField(required=False, allow_blank=True, default='')
+    is_primary = serializers.BooleanField(required=False)
+    is_active = serializers.BooleanField(required=False)
+
+    def validate(self, attrs):
+        attrs = super().validate(attrs)
+        if attrs['action'] == 'created':
+            missing = [f for f in ('bank', 'clabe') if not attrs.get(f)]
+            if missing:
+                raise serializers.ValidationError(
+                    {f: 'Required for action "created".' for f in missing}
+                )
+        return attrs
+
+
+class CompanyBulkUpdateSerializer(serializers.Serializer):
+    """
+    Payload para actualización bulk de Company y sus relaciones.
+    Los campos de la empresa son opcionales; si se envían se actualizan.
+    Las listas de relaciones son opcionales; si se envían se procesan por action.
+    """
+    # Company fields (all optional)
+    rfc = serializers.CharField(required=False)
+    legal_name = serializers.CharField(required=False)
+    person_type = serializers.ChoiceField(choices=Company.PERSON_TYPE, required=False)
+    tax_regime = serializers.PrimaryKeyRelatedField(
+        queryset=SatCatalog.objects.filter(catalog='c_RegimenFiscal'),
+        required=False,
+    )
+    tax_zip = serializers.CharField(required=False)
+    company_sector = serializers.PrimaryKeyRelatedField(
+        queryset=CompanySector.objects.all(), required=False, allow_null=True,
+    )
+    commercial_name = serializers.CharField(required=False, allow_blank=True)
+    email_billing = serializers.EmailField(required=False, allow_blank=True)
+    email_contact = serializers.EmailField(required=False, allow_blank=True)
+    phone = serializers.CharField(required=False, allow_blank=True)
+    website = serializers.URLField(required=False, allow_blank=True)
+    country = serializers.PrimaryKeyRelatedField(
+        queryset=Country.objects.all(), required=False,
+    )
+    slogan = serializers.CharField(required=False, allow_blank=True)
+    primary_color = serializers.CharField(required=False, allow_blank=True)
+    secondary_color = serializers.CharField(required=False, allow_blank=True)
+    legal_representative = serializers.CharField(required=False, allow_blank=True)
+    is_active = serializers.BooleanField(required=False)
+
+    # Nested relations with action flags
+    addresses = CompanyAddressBulkItemSerializer(many=True, required=False)
+    contacts = CompanyContactBulkItemSerializer(many=True, required=False)
+    bank_accounts = CompanyBankAccountBulkItemSerializer(many=True, required=False)
 
