@@ -21,11 +21,14 @@ from django.urls import include, path
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('api/core/', include('core.urls')),
     path('api/entities/', include('entities.urls')),
     path('api/inventory/', include('inventory.urls')),
     path('api/invoicing/', include('invoicing.urls')),
     path('api/accounting/', include('accounting.urls')),
     path('api/resources/', include('resources.urls')),
+    path('api/sales/', include('sales.urls')),
+    path('api/administration/', include('administration.urls')),
 ]
 
 if settings.DEBUG:

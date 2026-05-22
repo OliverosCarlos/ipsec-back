@@ -1,5 +1,6 @@
 # Environment
 .env
+.env.prod
 
 # Python
 __pycache__/
@@ -35,3 +36,5 @@ staticfiles/
 # OS
 Thumbs.db
 .DS_Store
+
+backups/

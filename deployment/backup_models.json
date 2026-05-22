@@ -1,0 +1,19 @@
+[
+  "entities.PersonTitle",
+  "entities.CompanySector",
+  "entities.Country",
+  "entities.JobPosition",
+  "entities.Bank",
+  "entities.Department",
+  "entities.Partner",
+  "entities.PartnerContact",
+  "entities.PartnerAddress",
+  "entities.PartnerRole",
+  "invoicing.SatCatalog",
+  "resources.Brand",
+  "resources.Type",
+  "resources.Category",
+  "resources.UnitOfMeasure",
+  "invoicing.ClaveProdServ",
+  "invoicing.ClaveUnidad"
+]

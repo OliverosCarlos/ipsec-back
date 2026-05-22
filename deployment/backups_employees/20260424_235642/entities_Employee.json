@@ -1,0 +1,65 @@
+[
+{
+  "model": "entities.employee",
+  "pk": 3,
+  "fields": {
+    "first_name": "Carlos",
+    "last_name_father": "R",
+    "last_name_mother": "Oliveros",
+    "date_of_birth": "1996-08-21",
+    "gender": "M",
+    "email": "carlos.oliveros@ipsec.mx",
+    "phone": "3117409627",
+    "photo": "employees/photos/blue-whale.jpg",
+    "department": 1,
+    "job_position": 8,
+    "status": null,
+    "account": 4,
+    "is_active": true,
+    "created_at": "2026-03-27T18:10:31.507Z",
+    "updated_at": "2026-03-27T18:10:31.507Z"
+  }
+},
+{
+  "model": "entities.employee",
+  "pk": 4,
+  "fields": {
+    "first_name": "Roberto",
+    "last_name_father": "Enriquez",
+    "last_name_mother": "D",
+    "date_of_birth": "1900-01-01",
+    "gender": "O",
+    "email": "renriquez@ipsec.mx",
+    "phone": "3111225278",
+    "photo": "employees/photos/images.png",
+    "department": 2,
+    "job_position": 1,
+    "status": null,
+    "account": 5,
+    "is_active": true,
+    "created_at": "2026-03-27T18:17:46.633Z",
+    "updated_at": "2026-03-27T18:17:46.633Z"
+  }
+},
+{
+  "model": "entities.employee",
+  "pk": 5,
+  "fields": {
+    "first_name": "Araceli",
+    "last_name_father": "Salazar",
+    "last_name_mother": "Unknow",
+    "date_of_birth": "2026-03-30",
+    "gender": "F",
+    "email": "araceli.salazar@ipsec.mx",
+    "phone": "3111415985",
+    "photo": "employees/photos/business-woman-girl-avatar-user-person-people-straight-hair-flat-style-vector.jpg",
+    "department": 2,
+    "job_position": 3,
+    "status": null,
+    "account": 6,
+    "is_active": true,
+    "created_at": "2026-03-30T16:40:35.986Z",
+    "updated_at": "2026-03-30T16:40:35.986Z"
+  }
+}
+]

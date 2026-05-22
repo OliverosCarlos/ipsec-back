@@ -1,0 +1,625 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8">
+    <title>Cotización {{ quotation.number }}</title>
+    <style>
+        /* ══════════════════════════════════════════════════════════════
+           xhtml2pdf best-practice notes:
+           - Layout is built with <table>; xhtml2pdf does NOT support
+             float, flexbox or grid reliably.
+           - Column widths are declared on the FIRST <tr> cells with
+             inline `style="width: Xpt"` (xhtml2pdf prefers points/cm
+             over % for nested layouts).
+           - Avoid `margin: auto`, `overflow: hidden`, `position`.
+           - Avoid nesting more than 2 table levels deep.
+           - Page-area is 17cm wide (letter 21.59cm − 2× 1.5cm margins).
+           ══════════════════════════════════════════════════════════════ */
+
+        @page {
+            size: letter;
+            margin: 1.5cm 1.5cm 2cm 1.5cm;
+
+            @frame footer {
+                -pdf-frame-content: page-footer;
+                bottom: 0;
+                margin-left: 1.5cm;
+                margin-right: 1.5cm;
+                height: 1.5cm;
+            }
+        }
+
+        body {
+            font-family: Helvetica, Arial, sans-serif;
+            font-size: 9pt;
+            color: #333;
+            line-height: 1.3;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        /* ── Spacers ── */
+        .spacer-sm {
+            height: 6pt;
+            font-size: 1pt;
+            line-height: 1pt;
+        }
+
+        .spacer-md {
+            height: 12pt;
+            font-size: 1pt;
+            line-height: 1pt;
+        }
+
+        .spacer-lg {
+            height: 24pt;
+            font-size: 1pt;
+            line-height: 1pt;
+        }
+
+        /* ── Generic helpers ── */
+        .center { text-align: center; }
+        .left   { text-align: left; }
+        .right  { text-align: right; }
+        .bold   { font-weight: bold; }
+
+        .total-text {
+            text-align: center;
+            font-size: 6pt;
+            color: #555;
+            font-style: italic;
+            margin-top: 10pt;
+            font-weight: bold;
+        }
+
+        /* ══ Decorative top line ══ */
+        .top-accent-line {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 8pt;
+        }
+
+        .top-accent-line td {
+            height: 2pt;
+            font-size: 1pt;
+            line-height: 1pt;
+        }
+
+        .line-1 { background-color: #00ae22; }
+        .line-2 { background-color: #5ecf47; }
+        .line-3 { background-color: #ff7601; }
+        .line-4 { background-color: #00698b; }
+        .line-5 { background-color: #00b5c5; }
+        .line-6 { background-color: #00698b; }
+        .line-7 { background-color: #ff7601; }
+        .line-8 { background-color: #00ae22; }
+
+        /* ══ Company Header ══ */
+        .company-header {
+            background-color: #eeeeee;
+            padding: 4pt;
+        }
+
+        .company-header td {
+            vertical-align: middle;
+        }
+
+        .company-name {
+            font-size: 7pt;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .company-address {
+            font-size: 7pt;
+            color: #4e4e4e;
+            line-height: 1.4;
+        }
+
+        .company-logos {
+            text-align: right;
+            white-space: nowrap;
+        }
+
+        .company-logos img {
+            vertical-align: middle;
+        }
+
+        /* ══ Client Data Box ══ */
+        .client-box-header {
+            font-size: 9pt;
+            font-weight: bold;
+            padding-bottom: 1pt;
+        }
+
+        .client-data td {
+            font-size: 6pt;
+            vertical-align: top;
+        }
+
+        .client-data td.label {
+            font-weight: bold;
+            color: #000;
+            white-space: nowrap;
+            width: 30%;
+        }
+
+        /* ══ Intro / Project ══ */
+        .intro {
+            font-size: 6pt;
+            line-height: 1.4;
+        }
+
+        .project-title {
+            font-size: 9pt;
+            font-weight: bold;
+            color: #000;
+        }
+
+        /* ══ Lines table ══ */
+        .lines-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .lines-table th {
+            color: #000;
+            font-size: 6pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .lines-table td {
+            padding: 2pt 0pt;
+            font-size: 6pt;
+            vertical-align: top;
+        }
+
+        .lines-table .qt-line {
+            background-color: #e1f0f7;
+            font-size: 6pt;
+        }
+
+        .lines-table .total-qt-line td {
+            padding: 1pt 0pt;
+            font-size: 7pt;
+        }
+
+        /* ══ Totals ══ */
+        .totals-1label {
+            text-align: right;
+            font-weight: bold;
+            color: #0d47a1;
+        }
+
+        .totals-2label {
+            text-align: right;
+            font-weight: bold;
+            color: #00a79d;
+        }
+
+        .totals-value {
+            text-align: right;
+            font-weight: bold;
+        }
+
+        /* ══ Signature ══ */
+        .signature-cell {
+            text-align: center;
+            vertical-align: bottom;
+        }
+
+        .signature-line {
+            border-top: 1pt solid #000;
+            padding-top: 4pt;
+            margin: 20pt;
+        }
+
+        .signature-name {
+            font-size: 8pt;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        .signature-title {
+            font-size: 8pt;
+            color: #555;
+            text-transform: uppercase;
+        }
+
+        /* ══ Bank ══ */
+        .bank-box {
+            border: solid 2px #e0e0e0;
+            background-color: #e1f0f7;
+        }
+
+        .bank-box-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 6pt;
+            margin: 5pt;
+        }
+
+        .bank-box-table td {
+            vertical-align: top;
+        }
+
+        /* ══ Notes ══ */
+        .notes-title {
+            font-size: 6pt;
+            font-weight: bold;
+            color: #00a79d;
+            border-top: 1pt solid #ddd;
+            padding-top: 6pt;
+        }
+
+        .notes-body {
+            font-size: 6pt;
+            color: #444;
+        }
+
+        .notes-body p, .notes-body ul, .notes-body ol, .notes-body li {
+            margin: 0;
+            padding: 0;
+        }
+
+        /* ══ Footer frame ══ */
+        #page-footer {
+            font-size: 8pt;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .footer-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .footer-table td {
+            padding: 1pt;
+            font-size: 7pt;
+            font-weight: bold;
+            color: #ffffff;
+            text-align: center;
+        }
+
+        .footer-table img {
+            vertical-align: middle;
+            border: 0;
+        }
+
+        .footer-phone   { background-color: #00ae22; }
+        .footer-email   { background-color: #00b5c5; }
+        .footer-web     { background-color: #ff7601; }
+        .footer-social  { background-color: #00698b; }
+
+        .footer-social img {
+            display: inline-block;
+            margin-right: 4px;
+        }
+
+    </style>
+</head>
+
+<body>
+    {% load static sales_filters %}
+
+    {# ══════════════ FOOTER FRAME ══════════════ #}
+    <div id="page-footer">
+        <table class="footer-table" cellpadding="0" cellspacing="0">
+            <tr>
+                <td class="footer-phone" width="25%">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td style="text-align:center;"><img src="{% static 'sales/img/call.png' %}" height="16" width="16"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; font-size:7pt; font-weight:bold; color:#fff;">Tel. 311 160 5000</td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="footer-email" width="25%">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td style="text-align:center;"><img src="{% static 'sales/img/mail.png' %}" height="16" width="16"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; font-size:7pt; font-weight:bold; color:#fff;">ventas@ipsec.mx</td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="footer-web" width="25%">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td style="text-align:center;"><img src="{% static 'sales/img/language.png' %}" height="16" width="16"></td>
+                        </tr>
+                        <tr>
+                            <td style="text-align:center; font-size:7pt; font-weight:bold; color:#fff;">www.ipsec.mx</td>
+                        </tr>
+                    </table>
+                </td>
+                <td class="footer-social" width="25%">
+                    <table width="100%" cellpadding="0" cellspacing="0">
+                        <tr>
+                            <td style="width:25%; text-align:center;"><img src="{% static 'sales/img/facebook.png' %}" height="14" width="14"></td>
+                            <td style="width:25%; text-align:center;"><img src="{% static 'sales/img/linkedin.png' %}" height="14" width="14"></td>
+                            <td style="width:25%; text-align:center;"><img src="{% static 'sales/img/instagram.png' %}" height="14" width="14"></td>
+                            <td style="width:25%; text-align:center;"><img src="{% static 'sales/img/gorjeo.png' %}" height="14" width="14"></td>
+                        </tr>
+                        <tr>
+                            <td colspan="4" style="text-align:center; font-size:7pt; font-weight:bold; color:#fff;">@ipsecmx</td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    {# ══════════════ COMPANY HEADER ══════════════ #}
+    {% if company %}
+    <table class="company-header" width="100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td colspan="2" class="company-name">
+                {{ company.legal_name|upper }}
+            </td>
+        </tr>
+        <tr>
+            <td class="company-address">
+                RFC: {{ company.rfc }}<br>
+                {% with fiscal=company.addresses.all %}
+                {% for addr in fiscal %}{% if addr.kind == 'FISCAL' and addr.is_primary %}
+                {{ addr.street }}{% if addr.ext_no %} {{ addr.ext_no }}{% endif %}{% if addr.int_no %} INT. {{ addr.int_no }}{% endif %}<br>
+                {{ addr.neighborhood }}<br>
+                {{ addr.city }}, {{ addr.state }}, {{ addr.country_id }}. {{ addr.zip_code }}<br>
+                {% endif %}{% endfor %}
+                {% endwith %}
+                {% if company.phone %}TEL: {{ company.phone|format_phone }}<br>{% endif %}
+                {% if company.email_contact %}{{ company.email_contact }}{% endif %}
+            </td>
+            <td class="company-logos" width="300">
+                <img src="{% static 'sales/img/logotipo_color_rgb.png' %}" height="48" width="140">
+                &nbsp;&nbsp;
+                <img src="{% static 'sales/img/cisco_partner_logo.webp' %}" height="48" width="80">
+            </td>
+        </tr>
+    </table>
+    {% endif %}
+
+    {# ══════════════ TOP ACCENT LINE ══════════════ #}
+    <table class="top-accent-line" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="line-1" style="width: 8%;"></td>
+            <td class="line-2" style="width: 9%;"></td>
+            <td class="line-3" style="width: 17%;"></td>
+            <td class="line-4" style="width: 5%;"></td>
+            <td class="line-5" style="width: 21%;"></td>
+            <td class="line-6" style="width: 5%;"></td>
+            <td class="line-7" style="width: 17%;"></td>
+            <td class="line-8" style="width: 18%;"></td>
+        </tr>
+    </table>
+
+    {# ══════════════ CLIENT DATA BOX ══════════════ #}
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-bottom: 10px;">
+        <tr>
+            <td class="client-box-header">
+                <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="30%">DATOS DEL CLIENTE</td>
+                        <td width="70%" class="right">COTIZACIÓN NO. {{ quotation.number }}</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <table width="100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td width="50%" valign="top">
+                            <table class="client-data" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td class="label">NOMBRE:</td>
+                                    <td>{{ quotation.partner.legal_name|upper }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">RFC:</td>
+                                    <td>{{ quotation.partner.rfc|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">TELÉFONO:</td>
+                                    <td>{{ quotation.partner.phone|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">CONTACTO:</td>
+                                    <td>{{ quotation.partner_contact.name|upper|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">REFERENCIA:</td>
+                                    <td>{{ quotation.reference|upper|default:"-" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">VIGENCIA:</td>
+                                    <td>{{ quotation.validity_date|date:"d/m/Y"|default:"-" }}</td>
+                                </tr>
+                            </table>
+                        </td>
+                        <td width="50%" valign="top">
+                            <table class="client-data" width="100%" cellpadding="0" cellspacing="0">
+                                <tr>
+                                    <td class="label">FECHA:</td>
+                                    <td>{{ quotation.date|date:"j" }} {{ quotation.date|date:"F"|upper }} {{ quotation.date|date:"Y" }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">CONDICIONES COMERCIALES:</td>
+                                    <td>{{ quotation.payment_terms_days }} DÍAS</td>
+                                </tr>
+                                <tr>
+                                    <td class="label">MONEDA:</td>
+                                    <td>{{ quotation.currency.description|default:quotation.currency.code }}</td>
+                                </tr>
+                                {% if quotation.salesperson %}
+                                <tr>
+                                    <td class="label">EJECUTIVO DE CUENTA:</td>
+                                    <td>{{ quotation.salesperson.get_full_name|default:quotation.salesperson.email|upper }}</td>
+                                </tr>
+                                {% endif %}
+                            </table>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    {# ══════════════ TOP ACCENT LINE ══════════════ #}
+    <table class="top-accent-line" cellpadding="0" cellspacing="0">
+        <tr>
+            <td class="line-1" style="width: 8%;"></td>
+            <td class="line-2" style="width: 9%;"></td>
+            <td class="line-3" style="width: 17%;"></td>
+            <td class="line-4" style="width: 5%;"></td>
+            <td class="line-5" style="width: 21%;"></td>
+            <td class="line-6" style="width: 5%;"></td>
+            <td class="line-7" style="width: 17%;"></td>
+            <td class="line-8" style="width: 18%;"></td>
+        </tr>
+    </table>
+
+    {# ══════════════ INTRO ══════════════ #}
+    <p class="intro" style="margin-top: 10px;">
+        Por medio de la presente <span class="bold">{{ company.legal_name|upper|default:"LA EMPRESA" }}</span>
+        pone a su disposición la siguiente cotización para cumplir con los requerimientos solicitados.
+    </p>
+
+    {# ══════════════ LINES TABLE ══════════════ #}
+    <table class="lines-table" cellpadding="0" cellspacing="0" style="margin-top: 5pt;">
+        <thead>
+            <tr>
+                <th style="width: 7%;" class="center">PARTIDA</th>
+                <th style="width: 10%;" class="center"># PARTE</th>
+                <th style="width: 31%;" class="center">DESCRIPCIÓN</th>
+                <th style="width: 9%;" class="right">CANTIDAD</th>
+                <th style="width: 12%;" class="right">P. UNITARIO</th>
+                <th style="width: 12%;" class="right">SUBTOTAL</th>
+                <th style="width: 7%;" class="right">DESC.</th>
+                <th style="width: 12%;" class="right">TOTAL</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for line in lines %}
+            <tr class="qt-line">
+                <td class="center">{{ forloop.counter }}</td>
+                <td class="center">{{ line.product_service_variation.sku|default:"-" }}</td>
+                <td>
+                    {% if line.description %}
+                        {{ line.description }}
+                    {% else %}
+                        {{ line.product_service_variation.display_name }}
+                    {% endif %}
+                </td>
+                <td class="center">{{ line.quantity|floatformat:0 }}</td>
+                <td class="right">${{ line.unit_price|floatformat:2 }}</td>
+                <td class="right">${{ line.subtotal|floatformat:2 }}</td>
+                <td class="right">{{ line.discount_percent|floatformat:0 }} %</td>
+                <td class="right">${{ line.total|floatformat:2 }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+                <td colspan="8" class="center" style="color: #999; padding: 15pt;">
+                    Sin líneas de detalle
+                </td>
+            </tr>
+            {% endfor %}
+            <tr></tr>
+            <tr class="total-qt-line">
+                <td colspan="7" class="totals-2label">SUBTOTAL:</td>
+                <td colspan="1" class="totals-value">${{ quotation.amount_subtotal|floatformat:2 }}</td>
+            </tr>
+            <tr class="total-qt-line">
+                <td colspan="7" class="totals-2label">IVA:</td>
+                <td colspan="1" class="totals-value">${{ quotation.amount_tax|floatformat:2 }}</td>
+            </tr>
+            {% if quotation.amount_discount %}
+            <tr class="total-qt-line">
+                <td colspan="7" class="totals-2label">DESCUENTO:</td>
+                <td colspan="1" class="totals-value">-${{ quotation.amount_discount|floatformat:2 }}</td>
+            </tr>
+            {% endif %}
+            <tr class="total-qt-line">
+                <td colspan="7" class="totals-1label">TOTAL:</td>
+                <td colspan="1" class="totals-value">${{ quotation.amount_total|floatformat:2 }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="spacer-sm"></div>
+
+    <p class="total-text">
+        {{ quotation.amount_total|amount_to_words }}
+    </p>
+
+    {# ══════════════ SIGNATURE & BANK ══════════════ #}
+    <table width="100%" cellpadding="0" cellspacing="0" style="margin-top: 10pt; margin-bottom: 10pt;">
+        <tr>
+            <td width="60%" valign="bottom" class="signature-cell">
+                <div class="signature-line">
+                    {% if quotation.salesperson %}
+                    <div class="signature-name">
+                        {{ quotation.salesperson.get_full_name|default:quotation.salesperson.email|upper }}
+                    </div>
+                    <div class="signature-title">PROMOTOR DE VENTAS</div>
+                    {% else %}
+                    <div class="signature-name">FIRMA</div>
+                    {% endif %}
+                </div>
+            </td>
+            <td width="40%" valign="top" class="bank-box">
+                <table class="bank-box-table" width="100%" cellpadding="0" cellspacing="0">
+                    <tr style="padding-top: 5pt;">
+                        <td colspan="2" class="right bold">DATOS BANCARIOS</td>
+                    </tr>
+                    <tr style="padding-top: 5pt;">
+                        <td class="bold">Banco: Banorte</td>
+                        <td>Sucursal: 7802</td>
+                    </tr>
+                    <tr>
+                        <td colspan="2" class="bold">Cuenta en MXN</td>
+                    </tr>
+                    <tr>
+                        <td>Cuenta:</td>
+                        <td>0208137751</td>
+                    </tr>
+                    <tr>
+                        <td>Clabe:</td>
+                        <td>072 560 00208137751 6</td>
+                    </tr>
+                    <tr></tr>
+                    <tr>
+                        <td colspan="2" class="bold">Cuenta en USD</td>
+                    </tr>
+                    <tr>
+                        <td>Cuenta:</td>
+                        <td>0591572447</td>
+                    </tr>
+                    <tr style="padding-bottom: 5pt;">
+                        <td>Clabe:</td>
+                        <td>072 560 00591572447 8</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+
+    {# ══════════════ NOTES ══════════════ #}
+    {% if quotation.external_notes %}
+    <div class="spacer-md"></div>
+    <p class="notes-title">NOTAS</p>
+    <div class="spacer-sm"></div>
+    <div class="notes-body">{{ quotation.external_notes|safe }}</div>
+    {% endif %}
+</body>
+
+</html>

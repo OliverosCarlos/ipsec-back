@@ -10,7 +10,14 @@ WORKDIR /app
 # Install system dependencies
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
+        build-essential \
+        pkg-config \
         libpq-dev \
+        libcairo2-dev \
+        libpango1.0-dev \
+        libgdk-pixbuf-2.0-dev \
+        libffi-dev \
+        shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
 # Install Python dependencies

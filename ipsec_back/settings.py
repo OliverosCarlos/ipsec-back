@@ -57,27 +57,37 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.postgres',
     # Third party
     'corsheaders',
     'rest_framework',
     'django_filters',
+    'knox',
     # Local apps
+    'core',
     'entities',
     'inventory',
     'invoicing',
     'accounting',
     'resources',
+    'sales',
+    'administration',
 ]
 
 REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'knox.auth.TokenAuthentication',
+    ],
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend',
         'rest_framework.filters.SearchFilter',
         'rest_framework.filters.OrderingFilter',
     ],
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
-    'PAGE_SIZE': 20,
+    'PAGE_SIZE': 10,
 }
+
+AUTH_USER_MODEL = 'core.Account'
 
 MIDDLEWARE = [
     'corsheaders.middleware.CorsMiddleware',

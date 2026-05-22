@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from .models import Brand, Product, ProductVariation, UnitOfMeasure
+from .models import Brand, ProdServ, ProdServVariation, UnitOfMeasure
 
 
 @admin.register(Brand)
@@ -17,21 +17,21 @@ class UnitOfMeasureAdmin(admin.ModelAdmin):
     list_filter = ['is_active']
 
 
-class ProductVariationInline(admin.TabularInline):
-    model = ProductVariation
+class ProdServVariationInline(admin.TabularInline):
+    model = ProdServVariation
     extra = 1
 
 
-@admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    list_display = ['short_name', 'sku', 'brand', 'is_active', 'created_at']
-    search_fields = ['short_name', 'long_name', 'sku']
+@admin.register(ProdServ)
+class ProdServAdmin(admin.ModelAdmin):
+    list_display = ['name', 'brand', 'is_active', 'created_at']
+    search_fields = ['name']
     list_filter = ['brand', 'is_active']
-    inlines = [ProductVariationInline]
+    inlines = [ProdServVariationInline]
 
 
-@admin.register(ProductVariation)
-class ProductVariationAdmin(admin.ModelAdmin):
-    list_display = ['product', 'quantity', 'unit_of_measure', 'price', 'is_active']
-    search_fields = ['product__short_name', 'barcode']
-    list_filter = ['is_active', 'unit_of_measure']
+@admin.register(ProdServVariation)
+class ProdServVariationAdmin(admin.ModelAdmin):
+    list_display = ['product', 'quantity', 'is_active']
+    search_fields = ['product__name']
+    list_filter = ['is_active']

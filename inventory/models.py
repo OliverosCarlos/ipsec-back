@@ -1,5 +1,9 @@
 from django.db import models
 
+class ProductVariationInventory(models.Model):
+	sku = models.CharField(max_length=100, unique=True, verbose_name='SKU')
+	barcode = models.CharField(max_length=100, blank=True, default='')
+	description = models.CharField(max_length=100, blank=True, default='')
 
 class Warehouse(models.Model):
 	code = models.CharField(max_length=30, unique=True)
@@ -20,7 +24,7 @@ class Warehouse(models.Model):
 
 class StockItem(models.Model):
 	product_variation = models.ForeignKey(
-		'resources.ProductVariation',
+		'resources.ProdServVariation',
 		on_delete=models.CASCADE,
 		related_name='stock_items',
 	)
@@ -53,7 +57,7 @@ class StockMovement(models.Model):
 		TRANSFER = 'transfer', 'Transfer'
 
 	product_variation = models.ForeignKey(
-		'resources.ProductVariation',
+		'resources.ProdServVariation',
 		on_delete=models.CASCADE,
 		related_name='stock_movements',
 	)
@@ -79,7 +83,7 @@ class StockMovement(models.Model):
 
 class StockAdjustment(models.Model):
 	product_variation = models.ForeignKey(
-		'resources.ProductVariation',
+		'resources.ProdServVariation',
 		on_delete=models.CASCADE,
 		related_name='stock_adjustments',
 	)
