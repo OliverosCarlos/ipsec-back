@@ -427,7 +427,7 @@ class PartnerRoleReadSerializer(serializers.ModelSerializer):
     role_display = serializers.CharField(source='get_role_display', read_only=True)
     diot_third_type_display = serializers.CharField(source='diot_third_type.description', default=None, read_only=True)
     diot_operation_type_display = serializers.CharField(source='diot_operation_type.description', default=None, read_only=True)
-    default_currency_display = serializers.CharField(source='default_currency.description', default=None, read_only=True)
+    default_currency_display = serializers.CharField(source='default_currency.code', default=None, read_only=True)
 
     class Meta:
         model = PartnerRole
