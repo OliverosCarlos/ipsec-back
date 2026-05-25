@@ -17,9 +17,11 @@ Including another URLconf
 from django.conf import settings
 from django.conf.urls.static import static
 from django.contrib import admin
+from django.http import HttpResponse
 from django.urls import include, path
 
 urlpatterns = [
+    path('health/', lambda r: HttpResponse('ok', content_type='text/plain'), name='health'),
     path('admin/', admin.site.urls),
     path('api/core/', include('core.urls')),
     path('api/entities/', include('entities.urls')),

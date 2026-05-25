@@ -1,15 +1,17 @@
-FROM python:3.12-slim
+# syntax=docker/dockerfile:1.7
 
-# Prevent Python from writing .pyc files and enable unbuffered output
-ENV PYTHONDONTWRITEBYTECODE=1
-ENV PYTHONUNBUFFERED=1
+# ── Stage 1: builder ──────────────────────────────────────────
+FROM python:3.12-slim-bookworm AS builder
 
-# Set work directory
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
+
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && \
-    apt-get install -y --no-install-recommends \
+# Build-time system deps (compilers + -dev headers)
+RUN apt-get update && apt-get install -y --no-install-recommends \
         build-essential \
         pkg-config \
         libpq-dev \
@@ -17,27 +19,55 @@ RUN apt-get update && \
         libpango1.0-dev \
         libgdk-pixbuf-2.0-dev \
         libffi-dev \
-        shared-mime-info \
     && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Install Python deps into an isolated prefix so we can copy them to runtime
 COPY requirements.txt .
-RUN pip install --no-cache-dir --upgrade pip && \
-    pip install --no-cache-dir -r requirements.txt
+RUN pip install --upgrade pip && \
+    pip install --prefix=/install -r requirements.txt
 
-# Copy project
-COPY . .
 
-# Collect static files
-RUN python manage.py collectstatic --noinput 2>/dev/null || true
+# ── Stage 2: runtime ──────────────────────────────────────────
+FROM python:3.12-slim-bookworm AS runtime
 
-# Create media directory
-RUN mkdir -p /app/media
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PIP_NO_CACHE_DIR=1 \
+    PIP_DISABLE_PIP_VERSION_CHECK=1
 
-# Copy and set permissions for entrypoint
-COPY entrypoint.sh /entrypoint.sh
+# Runtime-only system libs (no -dev) + curl for HEALTHCHECK
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        libpq5 \
+        libcairo2 \
+        libpango-1.0-0 \
+        libpangocairo-1.0-0 \
+        libgdk-pixbuf-2.0-0 \
+        shared-mime-info \
+        curl \
+    && rm -rf /var/lib/apt/lists/* \
+    && groupadd --system --gid 1000 app \
+    && useradd  --system --uid 1000 --gid app --home-dir /app --shell /sbin/nologin app
+
+WORKDIR /app
+
+# Bring in the Python packages compiled in the builder stage
+COPY --from=builder /install /usr/local
+
+# Project sources
+COPY --chown=app:app . .
+
+# Entrypoint
+COPY --chown=app:app entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
+# Ensure the mount points exist and are owned by the app user
+RUN mkdir -p /app/staticfiles /app/media && chown -R app:app /app
+
+USER app
+
 EXPOSE 8000
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+    CMD curl -fsS -H "Host: localhost" http://127.0.0.1:8000/health/ || exit 1
 
 ENTRYPOINT ["/entrypoint.sh"]

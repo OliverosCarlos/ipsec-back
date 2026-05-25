@@ -5,6 +5,7 @@ __pycache__
 .git
 .gitignore
 .env
+.env.*
 .venv
 venv
 env
@@ -19,3 +20,11 @@ Dockerfile
 nginx/
 .dockerignore
 staticfiles/
+media/
+backups/
+deployment/
+*.md
+tests/
+.pytest_cache
+.mypy_cache
+.ruff_cache
