@@ -29,6 +29,27 @@ SECRET_KEY = os.getenv('SECRET_KEY', 'django-insecure-)1d5$bbrs8ef6)q-tdecdekw*8
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = os.getenv('DEBUG', 'True') == 'True'
 
+USE_SSL = os.getenv('USE_SSL', 'False') == 'True'
+
+if USE_SSL:
+    # Trust the X-Forwarded-Proto header set by the upstream gateway.
+    # Makes request.is_secure() return True so Django builds absolute URLs
+    # (e.g. media files in serializers) with https:// — avoiding Mixed Content.
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    # Cookies only over HTTPS.
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    # HSTS — instruct browsers to only use HTTPS for this domain.
+    # Also configured at the nginx gateway; defined here as defense-in-depth.
+    SECURE_HSTS_SECONDS = 31536000  # 1 year
+    SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+    SECURE_HSTS_PRELOAD = False  # set True only if you submit to hstspreload.org
+    # Misc hardening
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_REFERRER_POLICY = 'strict-origin-when-cross-origin'
+    # NOTE: HTTP→HTTPS redirect is handled by the nginx-gateway at the edge,
+    # not by Django, to avoid redirect loops behind the proxy.
+
 ALLOWED_HOSTS = os.getenv('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',') if os.getenv('ALLOWED_HOSTS') else ['localhost', '127.0.0.1']
 CORS_ALLOWED_ORIGINS = os.getenv('CORS_ALLOWED_ORIGINS', 'http://localhost:4200,http://127.0.0.1:4200').split(',')
 CSRF_TRUSTED_ORIGINS = os.getenv('CSRF_TRUSTED_ORIGINS', 'http://localhost:4200').split(',')
