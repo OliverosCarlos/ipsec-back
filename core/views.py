@@ -2,17 +2,19 @@ from knox.views import LoginView as KnoxLoginView, LogoutView as KnoxLogoutView,
 from rest_framework import permissions
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
-from core.models import Comment, EntityModel
+from core.models import Account, AccountPlatformSettings, Comment, EntityModel
 from .filters import EntityModelFilter
 from .pagination import EntityModelPagination
 
 from .serializers import (
+    AccountPlatformSettingsSerializer,
     CommentSerializer, LoginSerializer,
     EntityModelSerializer,
 )
 
 from rest_framework import generics, viewsets, status
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.exceptions import PermissionDenied
 
 from collections import defaultdict
 from django.contrib.auth import login
@@ -199,3 +201,28 @@ class EntityModelByCodeView(generics.RetrieveAPIView):
     serializer_class = EntityModelSerializer
     permission_classes = [IsAuthenticated]
     lookup_field = 'code'
+
+
+class AccountPlatformSettingsMeView(generics.RetrieveUpdateAPIView):
+    serializer_class = AccountPlatformSettingsSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        settings, _ = AccountPlatformSettings.objects.get_or_create(account=self.request.user)
+        return settings
+
+
+class AccountPlatformSettingsByAccountView(generics.RetrieveUpdateAPIView):
+    serializer_class = AccountPlatformSettingsSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_url_kwarg = 'account_id'
+
+    def get_object(self):
+        account_id = self.kwargs.get(self.lookup_url_kwarg)
+
+        if not self.request.user.is_staff and self.request.user.id != int(account_id):
+            raise PermissionDenied('No tienes permisos para modificar esta configuracion.')
+
+        account = generics.get_object_or_404(Account, pk=account_id)
+        settings, _ = AccountPlatformSettings.objects.get_or_create(account=account)
+        return settings

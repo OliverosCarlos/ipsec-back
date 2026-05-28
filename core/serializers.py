@@ -3,6 +3,7 @@ from django.contrib.auth import authenticate
 from rest_framework import serializers
 
 from core.models import (
+    AccountPlatformSettings,
     Comment, CommentAttachment,
     EntityModel,
 )
@@ -109,3 +110,22 @@ class EntityModelSerializer(serializers.ModelSerializer):
             'views', 'search_attributes',
             'created_at', 'updated_at',
         )
+
+
+class AccountPlatformSettingsSerializer(serializers.ModelSerializer):
+    account_id = serializers.IntegerField(source='account.id', read_only=True)
+
+    class Meta:
+        model = AccountPlatformSettings
+        fields = (
+            'id',
+            'account_id',
+            'theme',
+            'font_family',
+            'currency_code',
+            'locale',
+            'preferences',
+            'created_at',
+            'updated_at',
+        )
+        read_only_fields = ('id', 'account_id', 'created_at', 'updated_at')

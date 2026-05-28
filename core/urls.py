@@ -1,6 +1,8 @@
 from django.urls import path
 
 from .views import (
+    AccountPlatformSettingsByAccountView,
+    AccountPlatformSettingsMeView,
     CommentDetail, CommentView, FilteredGroupedCommentView,
     LoginView, LogoutView, LogoutAllView,
     EntityModelListView, EntityModelDetailView, EntityModelByCodeView,
@@ -19,4 +21,8 @@ urlpatterns = [
     path('entity-models/', EntityModelListView.as_view(), name='entity-model-list'),
     path('entity-models/<int:pk>/', EntityModelDetailView.as_view(), name='entity-model-detail'),
     path('entity-models/by-code/<slug:code>/', EntityModelByCodeView.as_view(), name='entity-model-by-code'),
+
+    # Account platform settings
+    path('account-settings/me/', AccountPlatformSettingsMeView.as_view(), name='account-settings-me'),
+    path('account-settings/account/<int:account_id>/', AccountPlatformSettingsByAccountView.as_view(), name='account-settings-by-account'),
 ]
