@@ -2,6 +2,7 @@ from itertools import chain
 
 from django.db import models
 from rest_framework import generics, status
+from rest_framework.exceptions import ValidationError
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
@@ -113,6 +114,12 @@ class ProductListCreateView(generics.ListCreateAPIView):
         if self.request.method == 'GET':
             return ProdServReadSerializer
         return ProdServWriteSerializer
+
+    def perform_create(self, serializer):
+        inventory_type = Type.objects.filter(name__iexact='inventario').first()
+        if not inventory_type:
+            raise ValidationError({'product_type': 'No existe un tipo con nombre "inventario".'})
+        serializer.save(product_type=inventory_type)
 
 
 class ProductRetrieveUpdateDestroyView(generics.RetrieveUpdateDestroyAPIView):
